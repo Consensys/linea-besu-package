@@ -1,0 +1,51 @@
+{
+  "distIdentifier": "linea-besu",
+  "distOutput": "besu",
+  "modules": [
+    {
+      "type": "extract",
+      "name": "besu",
+      "url": "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/{version}/linea-besu-{version}.tar.gz",
+      "version": "24.7-develop-14d6f05"
+    },
+    {
+      "type": "download",
+      "name": "linea-sequencer",
+      "url": "https://github.com/Consensys/linea-sequencer/releases/download/v{version}/linea-sequencer-v{version}.jar",
+      "version": "0.1.5-rc2",
+      "outputDir": "plugins"
+    },
+    {
+      "type": "download",
+      "name": "linea-arithmetization",
+      "url": "https://github.com/Consensys/linea-arithmetization/releases/download/v{version}/linea-arithmetization-v{version}.jar",
+      "version": "0.1.5-rc6",
+      "outputDir": "plugins"
+    },
+    {
+      "type": "download",
+      "name": "besu-shomei-plugin",
+      "url": "https://github.com/Consensys/besu-shomei-plugin/releases/download/v{version}/besu-shomei-plugin-v{version}.jar",
+      "version": "0.3.1",
+      "outputDir": "plugins"
+    },
+    {
+      "type": "copy",
+      "name": "profiles",
+      "src": "config/profiles",
+      "outputDir": "profiles"
+    },
+    {
+      "type": "copy",
+      "name": "trace-limits",
+      "src": "config/trace-limits",
+      "outputDir": "trace-limits"
+    },
+    {
+      "type": "copy",
+      "name": "config",
+      "src": "config/config",
+      "outputDir": "config"
+    }
+  ]
+}
