@@ -15,5 +15,5 @@ fi
 
 python3 -m pip install --upgrade cloudsmith-cli
 
-cloudsmith push raw consensys/quorum-besu-plugins $TAR_DIST --name "besu-plugins-${PLUGINS_VERSION}.tar.gz" --version "${PLUGINS_VERSION}" --summary "Quorum Besu plugins ${PLUGINS_VERSION} binary distribution" --description "Binary distribution of Quorum Besu plugins ${PLUGINS_VERSION}." --content-type 'application/tar+gzip'
-cloudsmith push raw consensys/quorum-besu-plugins $ZIP_DIST --name "besu-plugins-${PLUGINS_VERSION}.zip" --version "${PLUGINS_VERSION}" --summary "Quorum Besu plugins ${PLUGINS_VERSION} binary distribution" --description "Binary distribution of Quorum Besu plugins ${PLUGINS_VERSION}." --content-type 'application/zip'
+cloudsmith push raw consensys/lina-besu-package $TAR_DIST --name "lina-besu-package-${PLUGINS_VERSION}.tar.gz" --version "${PLUGINS_VERSION}" --summary "lina-besu-package ${PLUGINS_VERSION} binary distribution" --description "Binary distribution of lina-besu-package ${PLUGINS_VERSION}." --content-type 'application/tar+gzip'
+cloudsmith push raw consensys/lina-besu-package $ZIP_DIST --name "lina-besu-package-${PLUGINS_VERSION}.zip" --version "${PLUGINS_VERSION}" --summary "lina-besu-package ${PLUGINS_VERSION} binary distribution" --description "Binary distribution of lina-besu-package ${PLUGINS_VERSION}." --content-type 'application/zip'

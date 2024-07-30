@@ -27,7 +27,7 @@ import de.undercouch.gradle.tasks.download.Download
 import groovy.json.JsonSlurper
 import org.apache.commons.codec.digest.DigestUtils
 
-def configFile = file('config/modules.json')
+def configFile = file('linea-besu/modules.json')
 def config = new JsonSlurper().parseText(configFile.text)
 def modules = config.modules
 
@@ -49,7 +49,7 @@ def registerDownloadTask(taskName, distributionUrl) {
   return tasks.register("download${taskName}", Download) {
     src distributionUrl
     dest "$DOWNLOADS_DIR/$fileName"
-    overwrite false
+    overwrite true
     doLast {
       def sha256Hex = DigestUtils.sha256Hex(new FileInputStream("$DOWNLOADS_DIR/$fileName"))
       println "Downloaded $fileName $sha256Hex"

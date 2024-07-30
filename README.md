@@ -47,20 +47,20 @@ This file specifies the modules to be downloaded, extracted, or copied. Below is
     {
       "type": "copy",
       "name": "profiles",
-      "src": "config/profiles",
+      "src": "linea-besu/profiles",
       "outputDir": "profiles"
     },
     {
       "type": "copy",
       "name": "trace-limits",
-      "src": "config/trace-limits",
+      "src": "linea-besu/trace-limits",
       "outputDir": "trace-limits"
     },
     {
       "type": "copy",
-      "name": "config",
-      "src": "config/config",
-      "outputDir": "config"
+      "name": "linea-besu",
+      "src": "linea-besu/linea-besu",
+      "outputDir": "linea-besu"
     }
   ]
 }
@@ -72,9 +72,9 @@ This file provides additional properties used in the build process:
 
 ```
 releaseVersion=0.0.4-SNAPSHOT
-distributionIdentifier=linea-plugins
+distributionIdentifier=linea-besu-package
 dockerOrgName=consensys
-dockerArtifactName=linea-besu-full
+dockerArtifactName=linea-besu-package
 ```
 
 ## Build Flow

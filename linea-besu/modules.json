@@ -32,19 +32,19 @@
     {
       "type": "copy",
       "name": "profiles",
-      "src": "config/profiles",
+      "src": "linea-besu/profiles",
       "outputDir": "profiles"
     },
     {
       "type": "copy",
       "name": "trace-limits",
-      "src": "config/trace-limits",
+      "src": "linea-besu/trace-limits",
       "outputDir": "trace-limits"
     },
     {
       "type": "copy",
       "name": "config",
-      "src": "config/config",
+      "src": "linea-besu/config",
       "outputDir": "config"
     }
   ]
