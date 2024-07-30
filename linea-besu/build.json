@@ -46,6 +46,12 @@
       "name": "config",
       "src": "linea-besu/config",
       "outputDir": "config"
+    },
+    {
+      "type": "copy",
+      "name": "genesis",
+      "src": "linea-besu/genesis",
+      "outputDir": "genesis"
     }
   ]
 }
