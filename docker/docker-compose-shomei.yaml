@@ -1,0 +1,9 @@
+version: '3'
+services:
+  besu-mainnet-node:
+    image: consensys/linea-besu-full:0.0.3-SNAPSHOT
+    command: --profile=shomei --p2p-host=YOUR_IP_ADDRESS
+    ports:
+      - 30303:30303
+      - 8545:8545
+      - 8546:8546

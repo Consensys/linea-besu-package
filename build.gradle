@@ -1,0 +1,234 @@
+plugins {
+  id 'com.diffplug.spotless' version '6.25.0'
+  id 'com.github.ben-manes.versions' version '0.26.0'
+  id 'com.github.hierynomus.license' version '0.16.1'
+  id 'io.spring.dependency-management' version '1.1.0'
+  id 'net.ltgt.errorprone' version '2.0.2'
+  id 'de.undercouch.download' version '5.6.0'
+  id 'maven-publish'
+  id 'groovy'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'org.codehaus.groovy:groovy-json:3.0.9'
+}
+
+version = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : 'snapshot'
+
+tasks.named('jar').configure {
+  enabled = false
+}
+
+import de.undercouch.gradle.tasks.download.Download
+import groovy.json.JsonSlurper
+import org.apache.commons.codec.digest.DigestUtils
+
+def configFile = file('linea-besu/modules.json')
+def config = new JsonSlurper().parseText(configFile.text)
+def modules = config.modules
+
+// Constants for paths
+ext {
+  DOWNLOADS_DIR = "$buildDir/downloads"
+  TAR_DIR = "$buildDir/tar"
+  DIST_OUTPUT_DIR = "$buildDir/${config.distOutput}"
+  DISTRIBUTIONS_INSTALL_DIR = "$buildDir/distributions/install"
+}
+
+static def getFileNameFromUrl(url) {
+  return url.split('/').last()
+}
+
+// Register a task to download a file
+def registerDownloadTask(taskName, distributionUrl) {
+  def fileName = getFileNameFromUrl(distributionUrl)
+  return tasks.register("download${taskName}", Download) {
+    src distributionUrl
+    dest "$DOWNLOADS_DIR/$fileName"
+    overwrite true
+    doLast {
+      def sha256Hex = DigestUtils.sha256Hex(new FileInputStream("$DOWNLOADS_DIR/$fileName"))
+      println "Downloaded $fileName $sha256Hex"
+    }
+  }
+}
+
+// Download and copy a file to the output directory
+def downloadAndCopy(taskName, distributionUrl, distOutput, outputDir) {
+  def fileName = getFileNameFromUrl(distributionUrl)
+  def outputPath = outputDir ? "$DIST_OUTPUT_DIR/$outputDir" : DIST_OUTPUT_DIR
+  registerDownloadTask(taskName, distributionUrl).configure {
+    doLast {
+      copy {
+        from file("$DOWNLOADS_DIR/$fileName")
+        into outputPath
+      }
+    }
+  }
+}
+
+// Register a task to download and extract a tar file
+def registerDownloadAndExtractTask(taskName, distributionUrl, distOutput, outputDir) {
+  def downloadTask = registerDownloadTask(taskName, distributionUrl)
+  def outputPath = outputDir ? "$DIST_OUTPUT_DIR/$outputDir" : DIST_OUTPUT_DIR
+  def fileName = getFileNameFromUrl(distributionUrl)
+  tasks.register("extract${taskName}", Copy) {
+    from(tarTree("$DOWNLOADS_DIR/$fileName")) {
+      eachFile { fileCopyDetails ->
+        def segments = fileCopyDetails.path.split('/')
+        if (segments.length > 1) {
+          fileCopyDetails.path = segments.drop(1).join('/')
+        } else {
+          fileCopyDetails.exclude()
+        }
+      }
+    }
+    into(outputPath)
+    includeEmptyDirs = false
+    dependsOn(downloadTask)
+  }
+}
+
+// Register a task to copy files
+def registerCopyTask(taskName, src, distOutput, outputDir) {
+  if (!outputDir) {
+    throw new GradleException("outputDir must be defined for copy type")
+  }
+  tasks.register("copy${taskName}", Copy) {
+    from(src)
+    into "$DIST_OUTPUT_DIR/$outputDir"
+    includeEmptyDirs = false
+  }
+}
+
+// Process each module based on its type
+modules.each { module ->
+  def taskName = module.name.capitalize()
+  switch (module.type) {
+    case 'download':
+      def distributionUrl = module.url.replace("{version}", module.version)
+      downloadAndCopy(taskName, distributionUrl, config.distOutput, module.outputDir)
+      break
+    case 'extract':
+      def distributionUrl = module.url.replace("{version}", module.version)
+      registerDownloadAndExtractTask(taskName, distributionUrl, config.distOutput, module.outputDir)
+      break
+    case 'copy':
+      registerCopyTask(taskName, module.src, config.distOutput, module.outputDir)
+      break
+  }
+}
+
+// Register a task to process all modules
+tasks.register('processModules') {
+  dependsOn modules.collect { module ->
+    def taskName = module.name.capitalize()
+    switch (module.type) {
+      case 'compile':
+        return "compile${taskName}"
+      case 'download':
+        return "download${taskName}"
+      case 'extract':
+        return "extract${taskName}"
+      case 'copy':
+        return "copy${taskName}"
+      default:
+        return null
+    }
+  }.findAll { it != null }
+}
+
+// Register a task to prepare the distribution folder
+tasks.register('prepareDistFolder', Copy) {
+  dependsOn processModules
+  def newFolderName = "${config.distIdentifier}-${version}"
+  def newFolderPath = "$TAR_DIR/$newFolderName"
+
+  doFirst {
+    delete newFolderPath
+  }
+
+  from(DIST_OUTPUT_DIR) {
+    includeEmptyDirs = false
+    exclude "**/LICENSE"
+  }
+  into newFolderPath
+}
+
+// Register a task to create a tar archive of the distribution
+tasks.register('distTar', Tar) {
+  dependsOn prepareDistFolder
+
+  def outputTarGzFileName = "${config.distIdentifier}-${version}.tar.gz"
+
+  from(TAR_DIR) {
+    includeEmptyDirs = false
+  }
+
+  archiveFileName.set(outputTarGzFileName)
+  destinationDirectory.set(file("$buildDir"))
+  compression = Compression.GZIP
+
+  doLast {
+    def tarFile = file("$buildDir/${config.distIdentifier}-${version}.tar.gz")
+    if (!tarFile.exists()) {
+      throw new GradleException("Tar file not found: $tarFile")
+    }
+
+    def sha256Hex = DigestUtils.sha256Hex(new FileInputStream(tarFile))
+    println "SHA-256 hash: $sha256Hex"
+  }
+}
+
+ext.besuPluginsIdentifier = "${config.distIdentifier}-${version}"
+
+// Register a task to install the distribution
+tasks.register('installDist', Copy) {
+  dependsOn distTar
+
+  from(tarTree(distTar.outputs.files.singleFile)) {
+    eachFile { path = path.replaceFirst(besuPluginsIdentifier, config.distIdentifier) }
+    includeEmptyDirs = false
+  }
+  into DISTRIBUTIONS_INSTALL_DIR
+}
+
+// Register a task to create a zip archive of the distribution
+tasks.register('distZip', Zip) {
+  dependsOn installDist
+
+  archiveBaseName.set(config.distIdentifier)
+  from installDist.outputs.files
+  archiveExtension.set('zip')
+}
+
+// Define artifacts for publishing
+artifacts {
+  archives tasks.distTar
+  archives tasks.distZip
+}
+
+// Register a task to verify the distributions
+tasks.register("verifyDistributions") {
+  dependsOn distTar
+  dependsOn distZip
+  def distTarFile = distTar.outputs.files.singleFile
+  def distZipFile = distZip.outputs.files.singleFile
+  def minDistributionSize = 20000000
+
+  doFirst {
+    if (distTarFile.length() < minDistributionSize) {
+      throw new GradleException("Distribution tar is suspiciously small: ${distTarFile.length()} bytes")
+    }
+    if (distZipFile.length() < minDistributionSize) {
+      throw new GradleException("Distribution zip is suspiciously small: ${distZipFile.length()} bytes")
+    }
+  }
+}
+
+// Apply additional Gradle script for Docker
+apply from: rootProject.file("gradle/docker.gradle")
