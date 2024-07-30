@@ -1,3 +1,7 @@
+
+# Chain
+genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
+
 # Required plugins to run a sequencer node
 plugins=["LineaExtraDataPlugin","LineaEndpointServicePlugin","LineaTransactionPoolValidatorPlugin","LineaTransactionSelectorPlugin"]
 
@@ -5,6 +9,8 @@ plugins=["LineaExtraDataPlugin","LineaEndpointServicePlugin","LineaTransactionPo
 # Options required to run a sequencer node
 plugin-linea-deny-list-path="config/denylist.mainnet.txt"
 plugin-linea-module-limit-file-path="config/trace-limits.mainnet.toml"
+
+# Other sequencer options...
 plugin-linea-max-block-calldata-size=60000
 plugin-linea-tx-pool-simulation-check-api-enabled=false
 plugin-linea-tx-pool-profitability-check-p2p-enabled=false

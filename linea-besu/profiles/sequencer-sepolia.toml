@@ -1,0 +1,7 @@
+# Chain
+genesis-file="genesis/genesis.testnet-sepolia.json" # Path to the custom genesis file
+
+# Required plugins to run a sequencer node
+plugins=["LineaExtraDataPlugin","LineaEndpointServicePlugin","LineaTransactionPoolValidatorPlugin","LineaTransactionSelectorPlugin"]
+
+# TODO Other sequencer options...
