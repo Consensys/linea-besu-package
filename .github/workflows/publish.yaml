@@ -45,6 +45,4 @@ jobs:
 
       - name: Build and Publish Docker Image
         run: |
-        # TODO fix multiplatform
-        #  ./gradlew -Pdocker-platform=linux/amd64,linux/arm64 distDocker
           ./gradlew -Pdocker-platform=linux/arm64 distDocker
