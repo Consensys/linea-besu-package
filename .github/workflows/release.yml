@@ -35,6 +35,8 @@ jobs:
         id: read_config
         run: |
           config=$(cat linea-besu/build.json)
+          echo "Configuration file content:"
+          echo "$config"
           echo "::set-output name=config::$config"
 
       - name: Generate release body
