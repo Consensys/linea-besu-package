@@ -37,12 +37,6 @@
     },
     {
       "type": "copy",
-      "name": "trace-limits",
-      "src": "linea-besu/trace-limits",
-      "outputDir": "trace-limits"
-    },
-    {
-      "type": "copy",
       "name": "config",
       "src": "linea-besu/config",
       "outputDir": "config"
