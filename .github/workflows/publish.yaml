@@ -45,4 +45,4 @@ jobs:
 
       - name: Build and Publish Docker Image
         run: |
-          ./gradlew -Pdocker-platform=linux/amd64,linux/arm64 distDocker -x checkLicense
+          ./gradlew -Pdocker-platform=linux/amd64,linux/arm64 distDocker
