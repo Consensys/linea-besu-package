@@ -6,7 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  create_release:
 
     runs-on: ubuntu-latest
 
@@ -31,6 +31,21 @@ jobs:
         env:
           JAVA_OPTS: -Xmx2g -Dorg.gradle.daemon=false
 
+      - name: Read configuration file
+        id: read_config
+        run: |
+          config=$(cat linea-besu/build.json)
+          echo "::set-output name=config::$config"
+
+      - name: Generate release body
+        id: generate_body
+        run: |
+          config="${{ steps.read_config.outputs.config }}"
+          body="Draft release of version ${{ github.ref }}.\n\n## Modules and Versions\n"
+          modules=$(echo "$config" | jq -r '.modules[] | "- **\(.name)**: \(.version // "[source](\(.src))")"')
+          body="$body$modules"
+          echo "::set-output name=body::$body"
+
       - name: Draft Release
         id: create_release
         uses: actions/create-release@v1
@@ -39,7 +54,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: 'Draft release of version ${{ steps.get_version.outputs.VERSION }}.'
+          body: ${{ steps.generate_body.outputs.body }}
           draft: true
           prerelease: false
 
