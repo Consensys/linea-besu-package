@@ -31,10 +31,8 @@ jobs:
         run: |
           config=$(cat linea-besu/build.json)
           
-          body="Draft release of version ${{ steps.get_version.outputs.VERSION }}.\n\n## Modules and Versions\n"
-          modules=$(echo "$config" | jq -r '.modules[] | "- **\(.name)**: \(.version // "[source](\(.src))")"')
-          body="$body$modules"
-          
+          body=$(echo "$config" | jq -r '.modules[] | "- **\(.name)**: \(.version // "[source](\(.src))")"')
+         
           # Replace newlines with %0A for GitHub Actions output
           body="${body//'%'/'%25'}"
           body="${body//$'\n'/'%0A'}"
