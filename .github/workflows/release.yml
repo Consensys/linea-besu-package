@@ -26,23 +26,20 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-      - name: Read configuration file
-        id: read_config
-        run: |
-          config=$(cat linea-besu/build.json)
-          echo "Configuration file content:"
-          echo "$config"
-          echo "$config" > config.json
-
       - name: Generate release body
         id: generate_body
         run: |
-          config=$(cat config.json)
-          echo "Config content in generate_body step:"
-          echo "$config"
-          body="Draft release of version ${{ github.ref }}.\n\n## Modules and Versions\n"
+          config=$(cat linea-besu/build.json)
+          
+          body="Draft release of version ${{ steps.get_version.outputs.VERSION }}.\n\n## Modules and Versions\n"
           modules=$(echo "$config" | jq -r '.modules[] | "- **\(.name)**: \(.version // "[source](\(.src))")"')
           body="$body$modules"
+          
+          # Replace newlines with %0A for GitHub Actions output
+          body="${body//'%'/'%25'}"
+          body="${body//$'\n'/'%0A'}"
+          body="${body//$'\r'/'%0D'}"
+          
           echo "::set-output name=body::$body"
 
       - name: Build without tests
