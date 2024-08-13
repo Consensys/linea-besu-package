@@ -26,29 +26,29 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-      - name: Build without tests
-        run: ./gradlew build -PreleaseVersion=${{ steps.get_version.outputs.VERSION }}
-        env:
-          JAVA_OPTS: -Xmx2g -Dorg.gradle.daemon=false
-
       - name: Read configuration file
         id: read_config
         run: |
-          config=$(cat linea-besu/build.json)
+          config=$(cat path/to/your/config.json)
           echo "Configuration file content:"
           echo "$config"
-          echo "::set-output name=config::$config"
+          echo "$config" > config.json
 
       - name: Generate release body
         id: generate_body
         run: |
-          config="${{ steps.read_config.outputs.config }}"
+          config=$(cat config.json)
           echo "Config content in generate_body step:"
           echo "$config"
           body="Draft release of version ${{ github.ref }}.\n\n## Modules and Versions\n"
           modules=$(echo "$config" | jq -r '.modules[] | "- **\(.name)**: \(.version // "[source](\(.src))")"')
           body="$body$modules"
           echo "::set-output name=body::$body"
+
+      - name: Build without tests
+        run: ./gradlew build -PreleaseVersion=${{ steps.get_version.outputs.VERSION }}
+        env:
+          JAVA_OPTS: -Xmx2g -Dorg.gradle.daemon=false
 
       - name: Draft Release
         id: create_release
