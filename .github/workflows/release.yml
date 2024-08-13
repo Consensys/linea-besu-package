@@ -29,7 +29,7 @@ jobs:
       - name: Read configuration file
         id: read_config
         run: |
-          config=$(cat path/to/your/config.json)
+          config=$(cat linea-besu/build.json)
           echo "Configuration file content:"
           echo "$config"
           echo "$config" > config.json
