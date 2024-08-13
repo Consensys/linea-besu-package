@@ -43,6 +43,8 @@ jobs:
         id: generate_body
         run: |
           config="${{ steps.read_config.outputs.config }}"
+          echo "Config content in generate_body step:"
+          echo "$config"
           body="Draft release of version ${{ github.ref }}.\n\n## Modules and Versions\n"
           modules=$(echo "$config" | jq -r '.modules[] | "- **\(.name)**: \(.version // "[source](\(.src))")"')
           body="$body$modules"
