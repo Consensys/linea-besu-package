@@ -33,6 +33,9 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
 
+      - name: Set up containerd
+        uses: crazy-max/ghaction-setup-containerd@v3
+
       - name: Check Dockerfile syntax
         run: |
           docker run --rm -i hadolint/hadolint < docker/Dockerfile
