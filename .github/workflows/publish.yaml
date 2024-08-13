@@ -8,7 +8,7 @@ on:
     types: [released]
 
 jobs:
-  publish:
+  docker_publish:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
@@ -45,6 +45,15 @@ jobs:
           username: ${{ secrets.DOCKER_USER_RW }}
           password: ${{ secrets.DOCKER_PAT_RW }}
 
+      - name: Get the version
+        if: github.event_name == 'release'
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
       - name: Build and Publish Docker Image
         run: |
-          ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} -Pdocker-platform=linux/arm64 distDocker
+          if [ "${{ github.event_name }}" == "release" ]; then \
+            ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} -Pdocker-platform=linux/arm64 distDocker -PreleaseVersion=${{ steps.get_version.outputs.VERSION }}; \
+          else \
+            ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} -Pdocker-platform=linux/arm64 distDocker; \
+          fi
