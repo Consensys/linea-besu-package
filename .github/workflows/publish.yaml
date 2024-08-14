@@ -71,10 +71,12 @@ jobs:
           java-version: 21
           distribution: temurin
 
-      - name: Run testDocker
-        run: ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} testDocker
+      - name: Run testDocker tasks
+        run: |
+          ./gradlew -PdockerOrgName=${{ env.DOCKER_ORG_NAME }} tasks --all | grep testDocker_ | awk '{print $1}' | xargs -I {} ./gradlew {}
 
   publish_docker_image:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     needs: build_docker_image
     env:

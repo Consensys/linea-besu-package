@@ -62,30 +62,25 @@ tasks.register('distDocker') {
     }
 }
 
-tasks.register('testDocker') {
-    dependsOn distDocker
-    def expectedOutput = "Ethereum main loop is up"
-    def image = "${dockerImageName}:${dockerBuildVersion}"
+def profilesFolder = file('linea-besu/profiles')
+def expectedOutput = "Ethereum main loop is up"
+def image = "${dockerImageName}:${dockerBuildVersion}"
+def timeoutSeconds = 15
 
-    def timeoutSeconds = 15
-    def profilesFolder = file('linea-besu/profiles')
+if (!profilesFolder.exists() || !profilesFolder.isDirectory()) {
+    throw new GradleException("Profile folder does not exist or is not a directory: ${profilesFolder}")
+}
 
-    doLast {
-        if (!profilesFolder.exists() || !profilesFolder.isDirectory()) {
-            throw new GradleException("Profile folder does not exist or is not a directory: ${profilesFolder}")
-        }
+def profiles = profilesFolder.listFiles().findAll { it.name.endsWith('.toml') }
+if (profiles.isEmpty()) {
+    throw new GradleException("No TOML files found in folder: ${profilesFolder}")
+}
 
-        def profiles = profilesFolder.listFiles().findAll { it.name.endsWith('.toml') }
-        if (profiles.isEmpty()) {
-            throw new GradleException("No TOML files found in folder: ${profilesFolder}")
-        }
-        println "Testing profiles startup:"
+profiles.each { profile ->
+    def fileNameWithoutExtension = profile.name[0..-6] // Remove the '.toml' extension
 
-        def failedProfiles = []
-
-        profiles.each { profile ->
-            def fileNameWithoutExtension = profile.name[0..-6] // Remove the '.toml' extension
-
+    tasks.register("testDocker_${fileNameWithoutExtension}") {
+        doLast {
             def output = new ByteArrayOutputStream()
             def errorOutput = new ByteArrayOutputStream()
             def process = ["sh", "-c", "docker run --rm -e BESU_PROFILE=${fileNameWithoutExtension} ${image} "].execute()
@@ -111,16 +106,10 @@ tasks.register('testDocker') {
             if (!found) {
                 def actualOutput = output.toString().trim()
                 def errorMsg = errorOutput.toString().trim()
-                println "${profile.name}: FAILED"
-                println("Expected: '${expectedOutput}', but got: '${actualOutput}'. Error: '${errorMsg}'")
-                failedProfiles.add(profile.name)
+                throw new GradleException("Docker output did not match expected output within ${timeoutSeconds} seconds for profile ${profile.name}. Expected: '${expectedOutput}', but got: '${actualOutput}'. Error: '${errorMsg}'")
             } else {
-                println "${profile.name}: PASSED"
+                println "Docker output matched expected output for profile ${profile.name}: '${expectedOutput}'"
             }
-        }
-
-        if (!failedProfiles.isEmpty()) {
-            throw new GradleException("Some profiles failed: ${failedProfiles.join(', ')}")
         }
     }
 }
@@ -129,7 +118,6 @@ tasks.register('publishDocker') {
     dependsOn distDocker
     doLast {
         exec {
-            def image = "${dockerImageName}:${dockerBuildVersion}"
             executable shell
             args "-c", "docker push ${image}"
         }
