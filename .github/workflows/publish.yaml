@@ -12,7 +12,6 @@ on:
 
 jobs:
   build_docker_image:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
       architecture: "amd64"
