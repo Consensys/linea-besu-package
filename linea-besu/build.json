@@ -6,13 +6,13 @@
       "type": "extract",
       "name": "besu",
       "url": "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/{version}/linea-besu-{version}.tar.gz",
-      "version": "24.7-develop-14d6f05"
+      "version": "24.8-develop-dce796c"
     },
     {
       "type": "download",
       "name": "linea-sequencer",
       "url": "https://github.com/Consensys/linea-sequencer/releases/download/v{version}/linea-sequencer-v{version}.jar",
-      "version": "0.1.5-rc2",
+      "version": "0.3.0-rc2.1",
       "outputDir": "plugins"
     },
     {

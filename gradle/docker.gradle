@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
 
 def dockerBuildVersion = project.hasProperty('release.releaseVersion') ? project.property('release.releaseVersion') : "${rootProject.version}"
 def dockerOrgName = project.hasProperty('dockerOrgName') ? project.getProperty("dockerOrgName") : "hyperledger"
@@ -56,11 +57,84 @@ tasks.register('distDocker') {
             def gitDetails = getGitCommitDetails(7)
             executable shell
             workingDir dockerBuildDir
-            args "-c", "docker buildx build ${dockerPlatform} --build-arg BUILD_DATE=${buildTime()} --build-arg VERSION=${dockerBuildVersion} --build-arg VCS_REF=${gitDetails.hash} -t ${image} --push ."
+            args "-c", "docker buildx build ${dockerPlatform} --build-arg BUILD_DATE=${buildTime()} --build-arg VERSION=${dockerBuildVersion} --build-arg VCS_REF=${gitDetails.hash} -t ${image} ."
         }
     }
 }
 
+tasks.register('testDocker') {
+    dependsOn distDocker
+    def expectedOutput = "Ethereum main loop is up"
+    def image = "${dockerImageName}:${dockerBuildVersion}"
+
+    def timeoutSeconds = 15
+    def profilesFolder = file('linea-besu/profiles')
+
+    doLast {
+        if (!profilesFolder.exists() || !profilesFolder.isDirectory()) {
+            throw new GradleException("Profile folder does not exist or is not a directory: ${profilesFolder}")
+        }
+
+        def profiles = profilesFolder.listFiles().findAll { it.name.endsWith('.toml') }
+        if (profiles.isEmpty()) {
+            throw new GradleException("No TOML files found in folder: ${profilesFolder}")
+        }
+        println "Testing profiles startup:"
+
+        def failedProfiles = []
+
+        profiles.each { profile ->
+            def fileNameWithoutExtension = profile.name[0..-6] // Remove the '.toml' extension
+
+            def output = new ByteArrayOutputStream()
+            def errorOutput = new ByteArrayOutputStream()
+            def process = ["sh", "-c", "docker run --rm -e BESU_PROFILE=${fileNameWithoutExtension} ${image} "].execute()
+            process.consumeProcessOutput(output, errorOutput)
+
+            def startTime = System.currentTimeMillis()
+            def found = false
+
+            while ((System.currentTimeMillis() - startTime) < TimeUnit.SECONDS.toMillis(timeoutSeconds)) {
+                def actualOutput = output.toString().trim()
+                if (actualOutput.contains(expectedOutput)) {
+                    found = true
+                    break
+                }
+                if (!process.isAlive()) {
+                    break
+                }
+                Thread.sleep(1000) // Sleep for 1 second before checking again
+            }
+
+            process.waitForOrKill(TimeUnit.SECONDS.toMillis(1))
+
+            if (!found) {
+                def actualOutput = output.toString().trim()
+                def errorMsg = errorOutput.toString().trim()
+                println "${profile.name}: FAILED"
+                println("Expected: '${expectedOutput}', but got: '${actualOutput}'. Error: '${errorMsg}'")
+                failedProfiles.add(profile.name)
+            } else {
+                println "${profile.name}: PASSED"
+            }
+        }
+
+        if (!failedProfiles.isEmpty()) {
+            throw new GradleException("Some profiles failed: ${failedProfiles.join(', ')}")
+        }
+    }
+}
+
+tasks.register('publishDocker') {
+    dependsOn distDocker
+    doLast {
+        exec {
+            def image = "${dockerImageName}:${dockerBuildVersion}"
+            executable shell
+            args "-c", "docker push ${image}"
+        }
+    }
+}
 
 def getGitCommitDetails(length = 8) {
     try {
