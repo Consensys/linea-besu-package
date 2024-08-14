@@ -75,6 +75,7 @@ jobs:
         run: ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} testDocker
 
   publish_docker_image:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     needs: build_docker_image
     env:
