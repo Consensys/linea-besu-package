@@ -70,7 +70,7 @@ jobs:
           distribution: temurin
 
       - name: Run testDocker
-        run: ./gradlew testDocker
+        run: ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} testDocker
 
   publish_docker_image:
     runs-on: ubuntu-latest
@@ -95,4 +95,4 @@ jobs:
           password: ${{ secrets.DOCKER_PAT_RW }}
 
       - name: Publish Docker Image
-        run: ./gradlew publishDocker
+        run: ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} publishDocker
