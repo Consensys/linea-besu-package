@@ -71,8 +71,9 @@ jobs:
         id: list
         run: |
           files=$(ls linea-besu/profiles/* | xargs -n 1 basename | sed 's/\.[^.]*$//')
-          echo "files=$(echo $files | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> "$GITHUB_OUTPUT"
-          echo "Files: $files"
+          files_json=$(echo $files | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "files=$files_json" >> "$GITHUB_OUTPUT"
+          echo "Files: $files_json"
 
   run-test:
     runs-on: ubuntu-latest
