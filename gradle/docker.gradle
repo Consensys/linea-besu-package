@@ -127,11 +127,15 @@ tasks.register('testDocker') {
 
 tasks.register('publishDocker') {
     dependsOn distDocker
+    def dockerPlatform = ""
+    if (project.hasProperty('docker-platform')){
+        dockerPlatform = "--platform ${project.getProperty('docker-platform')}"
+    }
     doLast {
         exec {
             def image = "${dockerImageName}:${dockerBuildVersion}"
             executable shell
-            args "-c", "docker push ${image}"
+            args "-c", "docker ${dockerPlatform} push ${image}"
         }
     }
 }

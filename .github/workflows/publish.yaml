@@ -6,6 +6,9 @@ on:
       - main
   release:
     types: [released]
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build_docker_image:
