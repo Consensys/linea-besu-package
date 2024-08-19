@@ -34,3 +34,22 @@ jobs:
       - name: Check Dockerfile syntax
         run: |
           docker run --rm -i hadolint/hadolint < docker/Dockerfile
+
+      - name: Build Docker image
+        id: build_docker
+        run: |
+          output=$(./gradlew distDocker -PpublishDocker=false)
+          echo "$output"
+          image=$(echo "$output" | grep "DOCKER_IMAGE=" | cut -d'=' -f2)
+          if [ -z "$image" ]; then
+            echo "Error: Docker image name could not be extracted."
+            exit 1
+          fi
+          docker save $image -o /tmp/docker-image.tar
+          echo "DOCKER_IMAGE=$image" >> $GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp/docker-image.tar
