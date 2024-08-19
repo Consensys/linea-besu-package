@@ -45,6 +45,7 @@ jobs:
             echo "Error: Docker image name could not be extracted."
             exit 1
           fi
+          echo $image
           docker save $image -o /tmp/docker-image.tar
           echo "DOCKER_IMAGE=$image" >> $GITHUB_ENV
 
