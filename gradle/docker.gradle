@@ -41,6 +41,7 @@ tasks.register('distDocker') {
     dependsOn dockerDistUntar
     inputs.dir("build/docker-besu/")
     def dockerBuildDir = "build/docker-besu/"
+    def image = "${dockerImageName}:${dockerBuildVersion}"
 
     doLast {
         copy {
@@ -48,17 +49,18 @@ tasks.register('distDocker') {
             into(dockerBuildDir)
         }
         exec {
-            def image = "${dockerImageName}:${dockerBuildVersion}"
             def dockerPlatform = ""
             if (project.hasProperty('docker-platform')){
                 dockerPlatform = "--platform ${project.getProperty('docker-platform')}"
                 println "Building for platform ${project.getProperty('docker-platform')}"
             }
             def gitDetails = getGitCommitDetails(7)
+            def pushFlag = project.hasProperty('publishDocker') ? '--push' : ''
             executable shell
             workingDir dockerBuildDir
-            args "-c", "docker buildx build ${dockerPlatform} --build-arg BUILD_DATE=${buildTime()} --build-arg VERSION=${dockerBuildVersion} --build-arg VCS_REF=${gitDetails.hash} -t ${image} --push ."
+            args "-c", "docker buildx build ${dockerPlatform} --build-arg BUILD_DATE=${buildTime()} --build-arg VERSION=${dockerBuildVersion} --build-arg VCS_REF=${gitDetails.hash} -t ${image} ${pushFlag} ."
         }
+        println "DOCKER_IMAGE=${image}"
     }
 }
 
