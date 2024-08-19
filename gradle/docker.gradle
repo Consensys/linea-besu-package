@@ -55,7 +55,7 @@ tasks.register('distDocker') {
                 println "Building for platform ${project.getProperty('docker-platform')}"
             }
             def gitDetails = getGitCommitDetails(7)
-            def pushFlag = project.hasProperty('publishDocker') ? '--push' : ''
+            def pushFlag = project.hasProperty('publishDocker') ? '--push' : '--load'
             executable shell
             workingDir dockerBuildDir
             args "-c", "docker buildx build ${dockerPlatform} --build-arg BUILD_DATE=${buildTime()} --build-arg VERSION=${dockerBuildVersion} --build-arg VCS_REF=${gitDetails.hash} -t ${image} ${pushFlag} ."
