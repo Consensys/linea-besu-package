@@ -45,9 +45,13 @@ jobs:
             echo "Error: Docker image name could not be extracted."
             exit 1
           fi
-          echo $image
-          docker save $image -o /tmp/docker-image.tar
           echo "DOCKER_IMAGE=$image" >> $GITHUB_ENV
+          echo "Docker image name: $image"
+          docker images
+
+      - name: Save Docker image
+        run: |
+          docker save ${{ env.DOCKER_IMAGE }} -o /tmp/docker-image.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -66,7 +70,7 @@ jobs:
       - name: List files
         id: list
         run: |
-          files=$(ls linea-besu/profiles/*)
+          files=$(ls linea-besu/profiles/* | xargs -n 1 basename | sed 's/\.[^.]*$//')
           echo "::set-output name=files::$(echo $files | jq -R -s -c 'split("\n") | map(select(length > 0))')"
           echo "Files: $files"
 
