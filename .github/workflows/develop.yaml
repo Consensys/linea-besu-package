@@ -71,6 +71,17 @@ jobs:
         id: list
         run: |
           files=$(ls linea-besu/profiles/* | xargs -n 1 basename | sed 's/\.[^.]*$//')
-          echo "::set-output name=files::$(echo $files | jq -R -s -c 'split("\n") | map(select(length > 0))')"
+          echo "files=$(echo $files | jq -R -s -c 'split("\n") | map(select(length > 0))')" >> "$GITHUB_OUTPUT"
           echo "Files: $files"
+
+  run-test:
+    runs-on: ubuntu-latest
+    needs: split_tests
+    strategy:
+      matrix:
+        file: ${{ fromJSON(needs.split_tests.outputs.files) }}
+    steps:
+      - name: Log matrix item
+        run: | 
+          echo "Processing file: ${{ matrix.file }}"
 
