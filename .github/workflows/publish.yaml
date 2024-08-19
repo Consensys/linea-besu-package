@@ -46,9 +46,9 @@ jobs:
       - name: Build Docker Image
         run: |
           if [ "${{ github.event_name }}" == "release" ]; then \
-            ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} -Pdocker-platform=linux/arm64 distDocker -PreleaseVersion=${{ steps.get_version.outputs.VERSION }}; \
+            ./gradlew -PdockerOrgName=consensys -Pdocker-platform=linux/amd64,linux/arm64 distDocker -PreleaseVersion=${{ steps.get_version.outputs.VERSION }}; \
           else \
-            ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} -Pdocker-platform=linux/arm64 distDocker; \
+            ./gradlew -PdockerOrgName=consensys -Pdocker-platform=linux/amd64,linux/arm64 distDocker; \
           fi
 
   test_docker_image:
@@ -69,7 +69,7 @@ jobs:
           distribution: temurin
 
       - name: Run testDocker
-        run: ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} testDocker
+        run: ./gradlew -PdockerOrgName=consensys testDocker
 
   publish_docker_image:
     if: github.event_name != 'pull_request'
@@ -95,4 +95,4 @@ jobs:
           password: ${{ secrets.DOCKER_PAT_RW }}
 
       - name: Publish Docker Image
-        run: ./gradlew -PdockerOrgName=${{ secrets.DOCKER_ORG_NAME }} publishDocker
+        run: ./gradlew -PdockerOrgName=consensys publishDocker
