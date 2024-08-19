@@ -6,7 +6,7 @@
       "type": "extract",
       "name": "besu",
       "url": "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/{version}/linea-besu-{version}.tar.gz",
-      "version": "24.8-develop-dce796c"
+      "version": "24.8-develop-68db5e8"
     },
     {
       "type": "download",
