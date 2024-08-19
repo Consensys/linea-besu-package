@@ -68,4 +68,5 @@ jobs:
         run: |
           files=$(ls linea-besu/profiles/*)
           echo "::set-output name=files::$(echo $files | jq -R -s -c 'split("\n") | map(select(length > 0))')"
+          echo "Files: $files"
 
