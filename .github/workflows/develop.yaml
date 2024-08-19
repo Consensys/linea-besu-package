@@ -38,7 +38,7 @@ jobs:
       - name: Build Docker image
         id: build_docker
         run: |
-          output=$(./gradlew distDocker -PpublishDocker=false)
+          output=$(./gradlew distDocker)
           echo "$output"
           image=$(echo "$output" | grep "DOCKER_IMAGE=" | cut -d'=' -f2)
           if [ -z "$image" ]; then
@@ -53,3 +53,18 @@ jobs:
         with:
           name: docker-image
           path: /tmp/docker-image.tar
+
+  split_tests:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.list.outputs.files }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: List files
+        id: list
+        run: |
+          files=$(ls linea-besu/profiles/*)
+          echo "::set-output name=files::$(echo $files | jq -R -s -c 'split("\n") | map(select(length > 0))')"
+
