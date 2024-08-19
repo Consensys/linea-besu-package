@@ -52,9 +52,9 @@ jobs:
       - name: Build Docker Image
         run: |
           if [ "${{ github.event_name }}" == "release" ]; then \
-            ./gradlew -PdockerOrgName=consensys -Pdocker-platform=linux/amd64,linux/arm64 distDocker -PreleaseVersion=${{ steps.get_version.outputs.VERSION }}; \
+            ./gradlew -PdockerOrgName=consensys -Pdocker-platform=linux/amd64,linux/arm64 distDocker -PreleaseVersion=${{ steps.get_version.outputs.VERSION }}  -publishDocker=true; \
           else \
-            ./gradlew -PdockerOrgName=consensys -Pdocker-platform=linux/amd64,linux/arm64 distDocker; \
+            ./gradlew -PdockerOrgName=consensys -Pdocker-platform=linux/amd64,linux/arm64 distDocker -publishDocker=true; \
           fi
 
   test_docker_image:
