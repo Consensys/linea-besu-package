@@ -81,4 +81,5 @@ jobs:
       - name: Load image
         run: |
           docker load --input /tmp/docker-image.tar
+          docker image ls -a   
           docker image ls -a
