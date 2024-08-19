@@ -95,4 +95,4 @@ jobs:
           password: ${{ secrets.DOCKER_PAT_RW }}
 
       - name: Publish Docker Image
-        run: ./gradlew -PdockerOrgName=consensys publishDocker
+        run: ./gradlew -PdockerOrgName=consensys -Pdocker-platform=linux/amd64,linux/arm64 publishDocker
