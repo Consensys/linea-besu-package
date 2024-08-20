@@ -1,6 +1,9 @@
 # plugins
 Xplugins-external-enabled=false
 
+# Chain
+genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
+
 # logging
 # Settings for logging are defined in "/opt/log4j/besu-log-config.xml"
 
