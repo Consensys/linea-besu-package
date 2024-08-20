@@ -78,11 +78,14 @@ jobs:
           echo "Files: $files_json"
 
   test-profile:
+    timeout-minutes: 4
     runs-on: ubuntu-latest
     needs: prepare_tests
     strategy:
       matrix:
         file: ${{ fromJSON(needs.prepare_tests.outputs.files) }}
+    env:
+      CONTAINER_NAME: linea-besu-profile-check-${{ matrix.file }}
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
@@ -95,7 +98,17 @@ jobs:
           docker load --input /tmp/docker-image.tar
           docker image ls -a         
 
-      - name: Log matrix item
-        run: | 
-          echo "Processing file: ${{ matrix.file }}"
+      - name: Start container
+        run: |
+          COMMAND="docker run -d --name ${{ env.CONTAINER_NAME }} ${{ env.DOCKER_IMAGE }} -E BESU_PROFILE=${{ matrix.file }}"
+          echo $COMMAND
+          $COMMAND
+
+      - name: Verify besu container
+        run: bash .github/workflows/BesuContainerVerify.sh
+        env:
+          CONTAINER_NAME: ${{ env.CONTAINER_NAME }}
+
+      - name: Stop container
+        run: docker stop ${{ env.CONTAINER_NAME }}
 
