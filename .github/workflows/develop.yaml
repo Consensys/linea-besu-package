@@ -69,7 +69,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: List files
+      - name: Split profiles
         id: list
         run: |
           files=$(ls linea-besu/profiles/* | xargs -n 1 basename | sed 's/\.[^.]*$//')
@@ -100,7 +100,7 @@ jobs:
 
       - name: Start container
         run: |
-          COMMAND="docker run -d --name ${{ env.CONTAINER_NAME }} ${{ env.DOCKER_IMAGE }} -E BESU_PROFILE=${{ matrix.file }}"
+          COMMAND="docker run -d --name ${{ env.CONTAINER_NAME }} -e BESU_PROFILE=${{ matrix.file }} ${{ env.DOCKER_IMAGE }} "
           echo $COMMAND
           $COMMAND
 
