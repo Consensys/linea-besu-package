@@ -7,6 +7,8 @@ on:
 jobs:
   build_docker_image:
     runs-on: ubuntu-latest
+    outputs:
+      DOCKER_IMAGE: ${{ steps.build_docker.outputs.DOCKER_IMAGE }}
     env:
       architecture: "amd64"
       GRADLE_OPTS: "-Xmx6g -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=4"
@@ -45,13 +47,13 @@ jobs:
             echo "Error: Docker image name could not be extracted."
             exit 1
           fi
-          echo "DOCKER_IMAGE=$image" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$image" >> "$GITHUB_OUTPUT"
           echo "Docker image name: $image"
           docker images
 
       - name: Save Docker image
         run: |
-          docker save ${{ env.DOCKER_IMAGE }} -o /tmp/docker-image.tar
+          docker save ${{ steps.build_docker.outputs.DOCKER_IMAGE }} -o /tmp/docker-image.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -81,13 +83,14 @@ jobs:
     timeout-minutes: 4
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: prepare_tests
+    needs: [prepare_tests, build_docker_image]
     strategy:
       fail-fast: false
       matrix:
         file: ${{ fromJSON(needs.prepare_tests.outputs.files) }}
     env:
       CONTAINER_NAME: linea-besu-profile-check-${{ matrix.file }}
+      DOCKER_IMAGE: ${{needs.build_docker_image.outputs.DOCKER_IMAGE}}
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
