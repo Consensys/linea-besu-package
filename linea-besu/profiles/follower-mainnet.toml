@@ -1,4 +1,4 @@
-# plugins
+# Plugins - This option disables external plugins
 Xplugins-external-enabled=false
 
 # Chain
