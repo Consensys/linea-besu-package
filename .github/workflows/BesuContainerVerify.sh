@@ -47,7 +47,7 @@ done
 # Log entry does not present after all retries, fail the script with a message
 if [[ ${_SUCCESS} != "true" ]]
 then
-  docker logs --tail=100 ${CONTAINER_NAME}
+  docker logs --tail=200 ${CONTAINER_NAME}
   log_error "could not find the log message 'Ethereum main loop is up'"
 else
   echo "Besu container started and entered main loop"
