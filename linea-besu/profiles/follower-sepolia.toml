@@ -8,7 +8,7 @@ genesis-file="genesis/genesis.testnet-sepolia.json" # Path to the custom genesis
 # Settings for logging are defined in "/opt/log4j/besu-log-config.xml"
 
 # Sync mode and data layer implementation
-sync-mode="X_SNAP"
+sync-mode="SNAP"
 data-storage-format="BONSAI"
 Xsnapsync-synchronizer-flat-db-healing-enabled=true
 
