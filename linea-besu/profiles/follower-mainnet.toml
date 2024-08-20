@@ -1,9 +1,5 @@
 # plugins
-plugins=["none"]
-
-# data
-data-path="/config/data"
-node-private-key-file="/config/key-mainnet"
+Xplugins-external-enabled=false
 
 # logging
 # Settings for logging are defined in "/opt/log4j/besu-log-config.xml"
