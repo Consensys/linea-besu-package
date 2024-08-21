@@ -22,9 +22,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Get the version
+      - name: Get VERSION output
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_OUTPUT
 
       - name: Generate release body
         id: generate_body
