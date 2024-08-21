@@ -1,9 +1,8 @@
-# plugins
-plugins=["none"]
+# Plugins - This option disables external plugins
+Xplugins-external-enabled=false
 
-# data
-data-path="/config/data"
-node-private-key-file="/config/key-mainnet"
+# Chain
+genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
 
 # logging
 # Settings for logging are defined in "/opt/log4j/besu-log-config.xml"
