@@ -1,25 +1,25 @@
 # Linea Besu Distribution
 
 This project uses Gradle to manage dependencies, build tasks, and create distributions for linea-besu with all the necessary plugins to run a node for operators.
-The build process is configured to download, extract, and copy various modules as specified in the config/modules.json file. Additionally, it includes tasks for building Docker images.
+The build process is configured to download, extract, and copy various modules as specified in the `linea-besu/build.json` file. Additionally, it includes tasks for building Docker images.
 
 ## How-To Release
 
-Releases are automated using GitHub Actions and are triggered by pushing a tag that matches the pattern `v*`.
+Releases are automated using GitHub Actions and are triggered by pushing a tag that matches the
+pattern `'v[0-9]+.[0-9]+.[0-9]+`. (e.g., `v1.0.0`, `v2.1.3`)
 
-### Steps to Create a Release
 
-1. **Create and Push a Tag**
+### Create and Push a Tag
 
-   Create a new tag that follows the pattern `v*` (e.g., `v1.0.0`, `v2.1.3`). You can create and push a tag using the following Git commands:
-
+   Create a new tag that follows the pattern. Creating the tag will draft a release. This draft release will include the distribution artifact uploaded as an asset.
    ```sh
-   git tag v1.0.0
+   git tag -a 'v0.0.1' 5cf01f9  -m 'Release test'
    git push origin v1.0.0
    ```
 
-   - Creating the tag will draft a release. This draft release will include the distribution artifact uploaded as an asset.
-   - Once the draft release is reviewed and finalized, make it an official release. At this point, the Docker image will also be published.
+### Publish the release
+
+   Once the draft release is published, the Docker image will also be created and published to registry.
 
 ## Update the Build Configuration
 
@@ -30,7 +30,7 @@ The build process is driven by the following configuration files:
 
 ### Running the Build
 
-To run the entire build process, including downloading, extracting, copying modules, and creating distributions, you can execute:
+To run the entire build process, including downloading, extracting, copying plugins, and creating distributions, you can execute:
 
 ```sh
 gradle build
