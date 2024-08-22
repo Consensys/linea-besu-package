@@ -45,6 +45,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body_path: output.md
+          name: Release ${{ github.ref_name }}
           generate_release_notes: true
           fail_on_unmatched_files: true
           draft: true
