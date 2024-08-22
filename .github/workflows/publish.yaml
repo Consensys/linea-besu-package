@@ -68,9 +68,9 @@ jobs:
             echo "" >> output.md
             echo "| Image | Digest | Architecture | OS |" >> output.md
             echo "|-------|--------|--------------|----|" >> output.md
-            echo "$MANIFEST" | jq -r '.manifests[] | select(.platform.architecture != "unknown" and .platform.os != "unknown") | "| consensys/linea-besu-package:${{ github.ref_name }} | \(.digest) | \(.platform.architecture) | \(.platform.os) |"' >> output.md
+            echo "$MANIFEST" | jq -r '.manifests[] | select(.platform.architecture != "unknown" and .platform.os != "unknown") | "| consensys/linea-besu-package:${{ steps.get_version.outputs.VERSION }} | \(.digest) | \(.platform.architecture) | \(.platform.os) |"' >> output.md
           else
-            echo "Docker image consensys/linea-besu-package:${{ github.ref_name }} does not exist on Docker Hub."
+            echo "Docker image consensys/linea-besu-package:${{ steps.get_version.outputs.VERSION }} does not exist on Docker Hub."
             exit 1
           fi
 

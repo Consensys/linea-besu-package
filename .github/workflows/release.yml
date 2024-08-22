@@ -26,29 +26,25 @@ jobs:
         id: get_version
         run: echo "VERSION=${{ github.ref_name }}" >> $GITHUB_OUTPUT
 
-      - name: Generate release body
-        id: generate_body
-        run: |
-          config=$(cat linea-besu/build.json)
-          
-          body=$(echo "$config" | jq -r '.modules[] | "- **\(.name)**: \(.version // "[source](\(.src))")"')
-         
-          # Replace newlines with %0A for GitHub Actions output
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}"
-          
-          echo "::set-output name=body::$body"
-
       - name: Build without tests
         run: ./gradlew build -PreleaseVersion=${{ steps.get_version.outputs.VERSION }}
         env:
           JAVA_OPTS: -Xmx2g -Dorg.gradle.daemon=false
 
+      - name: Generate Release body
+        id: generate_body
+        run: |
+          config=$(cat linea-besu/build.json)
+          echo "## Release Notes for Version ${{ steps.get_version.outputs.VERSION }}" > output.md
+          echo "" >> output.md
+          echo "| Module | Version |" >> output.md
+          echo "|--------|---------|" >> output.md
+          echo "$config" | jq -r '.modules[] | "| **\(.name)** | \(.version // "[source](\(.src))") |"' >> output.md
+
       - name: Draft Release
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{ steps.generate_body.outputs.body }}
+          body_path: output.md
           generate_release_notes: true
           fail_on_unmatched_files: true
           draft: true
