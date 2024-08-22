@@ -37,6 +37,7 @@ ext {
   TAR_DIR = "$buildDir/tar"
   DIST_OUTPUT_DIR = "$buildDir/${config.distOutput}"
   DISTRIBUTIONS_INSTALL_DIR = "$buildDir/distributions/install"
+  DISTRIBUTIONS_DIR = "$buildDir/distributions"
 }
 
 static def getFileNameFromUrl(url) {
@@ -170,11 +171,11 @@ tasks.register('distTar', Tar) {
   }
 
   archiveFileName.set(outputTarGzFileName)
-  destinationDirectory.set(file("$buildDir"))
+  destinationDirectory.set(file("$DISTRIBUTIONS_DIR"))
   compression = Compression.GZIP
 
   doLast {
-    def tarFile = file("$buildDir/${config.distIdentifier}-${version}.tar.gz")
+    def tarFile = file("$DISTRIBUTIONS_DIR/${config.distIdentifier}-${version}.tar.gz")
     if (!tarFile.exists()) {
       throw new GradleException("Tar file not found: $tarFile")
     }
@@ -262,6 +263,16 @@ def getCheckedOutGitCommitHash() {
   refHead.text.trim().take takeFromHash
 }
 
+
+tasks.register('cleanDist') {
+  delete "$DOWNLOADS_DIR"
+  delete "$TAR_DIR"
+  delete "$DIST_OUTPUT_DIR"
+  delete "$DISTRIBUTIONS_INSTALL_DIR"
+  delete "$DISTRIBUTIONS_DIR"
+}
+
+processModules.dependsOn(cleanDist)
 
 // Apply additional Gradle script for Docker
 apply from: rootProject.file("gradle/docker.gradle")

@@ -35,7 +35,7 @@ jobs:
         id: generate_body
         run: |
           config=$(cat linea-besu/build.json)
-          echo "## Release Notes for Version ${{ steps.get_version.outputs.VERSION }}" > output.md
+          echo "## Release Notes > output.md
           echo "" >> output.md
           echo "| Module | Version |" >> output.md
           echo "|--------|---------|" >> output.md
@@ -50,4 +50,4 @@ jobs:
           fail_on_unmatched_files: true
           draft: true
           files: |
-            ./build/linea-besu-package-${{ steps.get_version.outputs.VERSION }}.tar.gz
+            ./build/distributions/linea-besu-package-${{ steps.get_version.outputs.VERSION }}.tar.gz
