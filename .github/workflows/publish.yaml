@@ -79,6 +79,16 @@ jobs:
             exit 1
           fi
 
+      - name: Tag Docker Image as latest
+        if: github.event_name == 'release'
+        run: |
+          docker tag consensys/linea-besu-package:${{ steps.get_version.outputs.VERSION }} consensys/linea-besu-package:latest
+
+      - name: Push latest Docker Image
+        if: github.event_name == 'release'
+        run: |
+          docker push consensys/linea-besu-package:latest
+
       - name: Update Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
