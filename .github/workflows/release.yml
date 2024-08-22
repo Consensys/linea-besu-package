@@ -33,9 +33,10 @@ jobs:
 
       - name: Generate Release body
         id: generate_body
+        continue-on-error: true
         run: |
           config=$(cat linea-besu/build.json)
-          echo "## Release Notes > output.md
+          echo "## Release Notes" > output.md
           echo "" >> output.md
           echo "| Module | Version |" >> output.md
           echo "|--------|---------|" >> output.md
