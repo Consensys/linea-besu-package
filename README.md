@@ -23,9 +23,15 @@ pattern `'v[0-9]+.[0-9]+.[0-9]+`. (e.g., `v1.0.0`, `v2.1.3`)
 
 ## Running with Docker
 
-The build process will incorporate all the TOML files located in the `linea-besu/profiles` directory into the package. These profiles are essential for configuring the node, as each one specifies the necessary plugins and CLI options to ensure Besu operates correctly.
+To run a node with a specific profile, set the `BESU_PROFILE` environment variable to the desired profile name:
 
-Currently, the following profiles are available:
+```sh
+docker run -e BESU_PROFILE=follower-mainnet consensys/linea-besu-package:0.0.1
+```
+The build process will incorporate all the TOML files located in the
+[linea-besu/profiles](https://github.com/Consensys/linea-besu-package/tree/main/linea-besu/profiles) 
+directory into the package. These profiles are essential for configuring the node, as each one specifies the necessary 
+plugins and CLI options to ensure Besu operates correctly.  Currently, the following profiles are available:
 
 | Profile Name         | Description                                | Status                |
 |----------------------|--------------------------------------------|-----------------------|
@@ -39,11 +45,6 @@ Currently, the following profiles are available:
 | `tracer-sepolia`     | Creates a tracer node on the Linea Sepolia testnet. | Pending Configuration |
 
 ### Running a Node
-To run a node with a specific profile, set the `BESU_PROFILE` environment variable to the desired profile name:
-
-```sh
-docker run -e BESU_PROFILE=follower-mainnet consensys/linea-besu-package:0.0.1
-```
 
 ## Update the Build Configuration
 
