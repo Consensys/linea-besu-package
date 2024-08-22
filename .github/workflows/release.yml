@@ -39,7 +39,7 @@ jobs:
           echo "" >> output.md
           echo "| Module | Version |" >> output.md
           echo "|--------|---------|" >> output.md
-          echo "$config" | jq -r '.modules[] | "| **\(.name)** | \(.version // "[source](\(.src))") |"' >> output.md
+          echo "$config" | jq -r '.modules[] | select(.src == null) | "| **\(.name)** | \(.version // "[source](\(.url))") |"' >> output.md
 
       - name: Draft Release
         uses: softprops/action-gh-release@v2
