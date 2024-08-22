@@ -62,7 +62,7 @@ jobs:
         if: github.event_name == 'release'
         id: verify
         run: |
-          MANIFEST=$(docker manifest inspect consensys/linea-besu-package:${{ github.ref_name }})
+          MANIFEST=$(docker manifest inspect consensys/linea-besu-package:${{ steps.get_version.outputs.VERSION }})
           if [ $? -eq 0 ]; then
             echo "## Docker Image Details" > output.md
             echo "" >> output.md
