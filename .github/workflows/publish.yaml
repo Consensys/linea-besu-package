@@ -90,5 +90,6 @@ jobs:
         if: github.event_name == 'release'
         run: |
           docker pull consensys/linea-besu-package:${{ steps.get_version.outputs.VERSION }}
-          docker tag consensys/linea-besu-package:${{ steps.get_version.outputs.VERSION }} consensys/linea-besu-package:latest
-          docker push consensys/linea-besu-package:latest
+          docker buildx imagetools create \
+            --tag consensys/linea-besu-package:latest \
+            consensys/linea-besu-package:${{ steps.get_version.outputs.VERSION }}
