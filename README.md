@@ -26,8 +26,15 @@ pattern `'v[0-9]+.[0-9]+.[0-9]+`. (e.g., `v1.0.0`, `v2.1.3`)
 To run a node with a specific profile, set the `BESU_PROFILE` environment variable to the desired profile name:
 
 ```sh
-docker run -e BESU_PROFILE=follower-mainnet consensys/linea-besu-package:0.0.1
+docker run -e BESU_PROFILE=follower-mainnet consensys/linea-besu-package:latest
 ```
+
+You can also start with the Docker Compose files located in the [docker-compose](https://github.com/Consensys/linea-besu-package/tree/main/docker) directory.
+
+```sh
+docker compose -f ./docker/docker-compose-follower-mainnet.yaml up
+```
+
 The build process will incorporate all the TOML files located in the
 [linea-besu/profiles](https://github.com/Consensys/linea-besu-package/tree/main/linea-besu/profiles) 
 directory into the package. These profiles are essential for configuring the node, as each one specifies the necessary 
@@ -44,7 +51,6 @@ plugins and CLI options to ensure Besu operates correctly.  Currently, the follo
 | `tracer-mainnet`     | Creates a tracer node on the Linea mainnet.     | Pending Configuration |
 | `tracer-sepolia`     | Creates a tracer node on the Linea Sepolia testnet. | Pending Configuration |
 
-### Running a Node
 
 ## Update the Build Configuration
 
