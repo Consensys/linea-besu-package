@@ -160,9 +160,36 @@ tasks.register('prepareDistFolder', Copy) {
   into newFolderPath
 }
 
+tasks.register('updateModifiedDates') {
+  dependsOn 'prepareDistFolder'
+
+  def newFolderName = "${config.distIdentifier}-${version}"
+  def newFolderPath = "$TAR_DIR/$newFolderName"
+
+  doLast {
+    // Get the last commit timestamp
+    def lastCommitTimestamp = 'git log -1 --format=%ct'.execute().text.trim()
+    def lastCommitTimeInMillis = Long.parseLong(lastCommitTimestamp) * 1000
+
+    println "Last commit timestamp (in milliseconds): ${lastCommitTimeInMillis}"
+
+    // Update the modified date of all files and folders in the specified folder
+    def folder = file(newFolderPath)
+    if (folder.exists() && folder.isDirectory()) {
+      folder.eachFileRecurse { file ->
+        file.setLastModified(lastCommitTimeInMillis)
+      }
+      // Update the modified date of the folder itself
+      folder.setLastModified(lastCommitTimeInMillis)
+    } else {
+      println "Folder does not exist or is not a directory: ${newFolderPath}"
+    }
+  }
+}
+
 // Register a task to create a tar archive of the distribution
 tasks.register('distTar', Tar) {
-  dependsOn prepareDistFolder
+  dependsOn 'prepareDistFolder', 'updateModifiedDates'
 
   def outputTarGzFileName = "${config.distIdentifier}-${version}.tar.gz"
 
@@ -303,6 +330,8 @@ tasks.register('generateReleaseNotes') {
     }
   }
 }
+
+
 
 // Ensure release notes are generated during the build
 tasks.build {
