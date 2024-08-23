@@ -1,7 +1,7 @@
 # Linea Besu Distribution
 
 This project uses Gradle to manage dependencies, build tasks, and create distributions for linea-besu with all the necessary plugins to run a node for operators.
-The build process is configured to download, extract, and copy various modules as specified in the `linea-besu/build.json` file. Additionally, it includes tasks for building Docker images.
+The build process is configured to download, extract, and copy various modules as specified in the [linea-besu/build.json](https://github.com/Consensys/linea-besu-package/tree/main/linea-besu/build.json) file. Additionally, it includes tasks for building Docker images.
 
 ## How-To Release
 
@@ -56,7 +56,8 @@ plugins and CLI options to ensure Besu operates correctly.  Currently, the follo
 
 The build process is driven by the following configuration files:
 
-- `linea-besu/build.json`: This file specifies the modules to be downloaded, extracted, or copied. Below is an example configuration:
+- [linea-besu/build.json](https://github.com/Consensys/linea-besu-package/tree/main/linea-besu/build.json): This file 
+specifies the modules to be downloaded, extracted, or copied. Below is an example configuration:
 - `gradle.properties`: This file provides additional properties used in the build process.
 
 ### Running the Build
