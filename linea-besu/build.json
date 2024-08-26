@@ -30,6 +30,13 @@
       "outputDir": "plugins"
     },
     {
+      "type": "download",
+      "name": "finalized-tag-updater",
+      "url": "https://linea-assets-public.s3.us-east-2.amazonaws.com/finalized-tag-plugin/finalized-tag-updater-v{version}.jar",
+      "version": "0.0.1",
+      "outputDir": "plugins"
+    },
+    {
       "type": "copy",
       "name": "profiles",
       "src": "linea-besu/profiles",
