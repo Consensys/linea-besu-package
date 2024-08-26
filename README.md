@@ -44,13 +44,12 @@ plugins and CLI options to ensure Besu operates correctly.  Currently, the follo
 |----------------------|--------------------------------------------|-----------------------|
 | [`follower-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/follower-mainnet.toml)   | Creates a follower node on the Linea mainnet.   | ✅                   |
 | [`follower-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/follower-sepolia.toml)   | Creates a follower node on the Linea Sepolia testnet. | ✅                   |
-| [`sequencer-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/sequencer-mainnet.toml)  | Creates a sequencer node on the Linea mainnet.  | ❌                    |
-| [`sequencer-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/sequencer-sepolia.toml)  | Creates a sequencer node on the Linea Sepolia testnet. | ❌                    |
-| [`shomei-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/shomei-mainnet.toml)     | Creates a Shomei node on the Linea mainnet.     | ❌                    |
-| [`shomei-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/shomei-sepolia.toml)     | Creates a Shomei node on the Linea Sepolia testnet. | ❌                    |
-| [`tracer-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/tracer-mainnet.toml)     | Creates a tracer node on the Linea mainnet.     | ❌                    |
-| [`tracer-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/tracer-sepolia.toml)     | Creates a tracer node on the Linea Sepolia testnet. | ❌                    |
-
+| [`sequencer-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/sequencer-mainnet.toml)  | Creates a sequencer node on the Linea mainnet.  | ⚠️                    |
+| [`sequencer-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/sequencer-sepolia.toml)  | Creates a sequencer node on the Linea Sepolia testnet. | ⚠️                    |
+| [`shomei-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/shomei-mainnet.toml)     | Creates a Shomei node on the Linea mainnet.     | ⚠️                    |
+| [`shomei-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/shomei-sepolia.toml)     | Creates a Shomei node on the Linea Sepolia testnet. | ⚠️                    |
+| [`tracer-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/tracer-mainnet.toml)     | Creates a tracer node on the Linea mainnet.     | ⚠️                    |
+| [`tracer-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/tracer-sepolia.toml)     | Creates a tracer node on the Linea Sepolia testnet. | ⚠️                    |
 
 ## Update the Build Configuration
 
