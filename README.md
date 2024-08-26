@@ -60,15 +60,21 @@ The build process is driven by the following configuration files:
 specifies the modules to be downloaded, extracted, or copied. Below is an example configuration:
 - `gradle.properties`: This file provides additional properties used in the build process.
 
-### Running the Build
+### Building Locally
 
-To run the entire build process, including downloading, extracting, copying plugins, and creating distributions, you can execute:
+To execute the complete build process, which includes downloading, extracting, copying plugins, and creating 
+distributions, use the following command:
 
 ```sh
 gradle build
 ```
 
-To build the Docker image, you can execute:
+This command will generate two distribution files:
+
+- `/build/distributions/linea-besu-package-<version>.tar.gz`
+- `/build/distributions/linea-besu-package-<version>.zip`
+
+To create the Docker image, run:
 
 ```sh
 gradle distDocker
