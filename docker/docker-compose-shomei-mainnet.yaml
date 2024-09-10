@@ -1,9 +1,0 @@
-version: '3'
-services:
-  linea-besu-shoimei-mainnet-node:
-    image: consensys/linea-besu-package:latest
-    command: --profile=shomei-mainnet
-    ports:
-      - 30303:30303
-      - 8545:8545
-      - 8546:8546
