@@ -30,9 +30,7 @@ docker run -e BESU_PROFILE=follower-mainnet consensys/linea-besu-package:latest
 
 ## Use a binary distribution
 
-## Step 1. Install Linea Besu
-
-### Install from packaged binaries
+### Step 1. Install Linea Besu from packaged binaries
 *  Download the [linea-besu-package](https://github.com/Consensys/linea-besu-package/releases) binaries.
 * Unpack the downloaded files and change into the besu-linea-package-&lt;release&gt;
 directory.
