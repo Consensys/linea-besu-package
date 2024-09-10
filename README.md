@@ -41,7 +41,7 @@ bin/besu --help
 
 ### Step 2. Start the Besu client
 ```sh
-besu --profile=follower-mainnet
+bin/besu --profile=follower-mainnet
 ```
 
 ## Build from source
