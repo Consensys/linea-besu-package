@@ -4,9 +4,7 @@ This project uses Gradle to manage dependencies, build tasks, and create distrib
 all the necessary plugins to run a node for operators. The build process will also create a Docker image that can be 
 used to run a node with a specific profile.
 
-## Running Linea Besu
-
-## Use Docker
+## Run with Docker
 
 ### Step 1. Download configuration files
 
@@ -28,7 +26,7 @@ Alternatively, to run a node with a specific profile, set the `BESU_PROFILE` env
 docker run -e BESU_PROFILE=follower-mainnet consensys/linea-besu-package:latest
 ```
 
-## Use a binary distribution
+## Run with a binary distribution
 
 ### Step 1. Install Linea Besu from packaged binaries
 *  Download the [linea-besu-package](https://github.com/Consensys/linea-besu-package/releases) binaries.
