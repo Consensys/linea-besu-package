@@ -4,7 +4,47 @@ This project uses Gradle to manage dependencies, build tasks, and create distrib
 all the necessary plugins to run a node for operators. The build process will also create a Docker image that can be 
 used to run a node with a specific profile.
 
-## Build Configuration
+## Run with Docker
+
+### Step 1. Download configuration files
+
+You can start with the Docker Compose files located in the [docker-compose](https://github.com/Consensys/linea-besu-package/tree/main/docker) directory.
+
+### Step 2. Update the Docker Compose file
+In the docker-compose.yaml file, update the --p2p-host command to include your public IP address. For example:
+```sh
+--p2p-host=103.10.10.10
+```
+
+### Step 2. Start the Besu node
+```sh
+docker compose -f ./docker/docker-compose-follower-mainnet.yaml up
+```
+Alternatively, to run a node with a specific profile, set the `BESU_PROFILE` environment variable to the desired profile name:
+
+```sh
+docker run -e BESU_PROFILE=follower-mainnet consensys/linea-besu-package:latest
+```
+
+## Run with a binary distribution
+
+### Step 1. Install Linea Besu from packaged binaries
+*  Download the [linea-besu-package&lt;release&gt;.tar.gz](https://github.com/Consensys/linea-besu-package/releases) 
+from the assets.
+* Unpack the downloaded files and change into the besu-linea-package-&lt;release&gt;
+directory.
+
+Display Besu command line help to confirm installation:
+```sh
+bin/besu --help
+```
+
+### Step 2. Start the Besu client
+```sh
+bin/besu --profile=follower-mainnet
+```
+
+## Build from source
 
 The build process is driven by the following configuration file:
 
@@ -41,18 +81,7 @@ The tag creation will draft a release and include the distribution artifact uplo
 Once the GitHub draft release is published, the Docker image will be created and pushed to the registry. Additionally, 
 the `latest` tag will be updated to match this release.
 
-## Running with Docker
 
-You can start with the Docker Compose files located in the [docker-compose](https://github.com/Consensys/linea-besu-package/tree/main/docker) directory.
-
-```sh
-docker compose -f ./docker/docker-compose-follower-mainnet.yaml up
-```
-Alternatively, to run a node with a specific profile, set the `BESU_PROFILE` environment variable to the desired profile name:
-
-```sh
-docker run -e BESU_PROFILE=follower-mainnet consensys/linea-besu-package:latest
-```
 
 ## Profiles
 
