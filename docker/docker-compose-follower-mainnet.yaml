@@ -1,4 +1,3 @@
-version: '3'
 services:
   linea-besu-follower-mainnet-node:
     image: consensys/linea-besu-package:latest
