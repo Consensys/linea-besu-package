@@ -1,7 +1,7 @@
 services:
   linea-besu-follower-mainnet-node:
     image: consensys/linea-besu-package:latest
-    command: --profile=follower-mainnet --p2p-host=YOUR_IP_ADDRESS
+    command: --profile=basic-mainnet --p2p-host=YOUR_IP_ADDRESS
     ports:
       - 30303:30303
       - 8545:8545

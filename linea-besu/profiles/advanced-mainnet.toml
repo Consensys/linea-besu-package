@@ -1,5 +1,15 @@
-# Plugins - This option disables external plugins
-Xplugins-external-enabled=false
+####################################################################################################
+# Plugins Configuration - This section manages the settings for external plugins.
+####################################################################################################
+
+plugins=["LineaEstimateGasEndpointPlugin","L1FinalizationTagUpdaterPlugin"]
+
+#LineaEstimateGas Options
+
+
+####################################################################################################
+# General Linea-Besu Configuration: This configuration should be consistent across all profiles.
+####################################################################################################
 
 # Chain
 genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
