@@ -7,7 +7,6 @@
 # Disable external plugins
 Xplugins-external-enabled=false
 
-
 ####################################################################################################
 # General Linea-Besu Configuration: This configuration should be consistent across all profiles.
 ####################################################################################################

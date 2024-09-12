@@ -18,7 +18,7 @@ In the docker-compose.yaml file, update the --p2p-host command to include your p
 
 ### Step 2. Start the Besu node
 ```sh
-docker compose -f ./docker/docker-compose-follower-mainnet.yaml up
+docker compose -f ./docker/docker-compose-basic-mainnet.yaml up
 ```
 Alternatively, to run a node with a specific profile, set the `BESU_PROFILE` environment variable to the desired profile name:
 
