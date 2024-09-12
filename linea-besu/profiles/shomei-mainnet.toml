@@ -1,7 +1,0 @@
-# Chain
-genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
-
-# Required plugins to run a sequencer node
-plugins=["ZkTrieLogPlugin","BesuShomeiRpcPlugin"]
-
-# TODO Other shomei options...

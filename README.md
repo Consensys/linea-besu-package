@@ -23,7 +23,7 @@ docker compose -f ./docker/docker-compose-basic-mainnet.yaml up
 Alternatively, to run a node with a specific profile, set the `BESU_PROFILE` environment variable to the desired profile name:
 
 ```sh
-docker run -e BESU_PROFILE=follower-mainnet consensys/linea-besu-package:latest
+docker run -e BESU_PROFILE=basic-mainnet consensys/linea-besu-package:latest
 ```
 
 ## Run with a binary distribution
@@ -41,7 +41,7 @@ bin/besu --help
 
 ### Step 2. Start the Besu client
 ```sh
-bin/besu --profile=follower-mainnet
+bin/besu --profile=basic-mainnet
 ```
 
 ## Build from source
