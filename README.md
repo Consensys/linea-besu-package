@@ -75,7 +75,7 @@ pattern `'v[0-9]+.[0-9]+.[0-9]+`. (e.g., `v1.0.0`, `v2.1.3`)
 The tag creation will draft a release and include the distribution artifact uploaded as an asset.
    ```sh
    git tag -a 'v0.0.1' 5cf01f9  -m 'Release test'
-   git push origin v1.0.0
+   git push upstream v1.0.0
    ```
 
 Once the GitHub draft release is published, the Docker image will be created and pushed to the registry. Additionally, 
@@ -110,5 +110,5 @@ Currently, the following profiles are available:
 | Profile Name                                                                                                              | Description                                                                          | Status                |
 |---------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|-----------------------|
 | [`basic-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-mainnet.toml)       | Creates a basic node on Linea mainnet.                                               | ✅                   |
-| [`advanced-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-sepolia.toml) | Creates a node on Linea mainnet with `linea_estimateGas` and `finalized tag plugin`. | ✅                   |
+| [`advanced-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-mainnet.toml) | Creates a node on Linea mainnet with `linea_estimateGas` and `finalized tag plugin`. | ✅                   |
 
