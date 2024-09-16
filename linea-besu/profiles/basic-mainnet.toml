@@ -1,16 +1,3 @@
-####################################################################################################
-# Plugins Configuration
-# This section manages the settings for external plugins.
-# Note: Adjust these settings as needed for different profiles.
-####################################################################################################
-
-# Disable external plugins
-Xplugins-external-enabled=false
-
-####################################################################################################
-# General Linea-Besu Configuration: This configuration should be consistent across all profiles.
-####################################################################################################
-
 # Chain
 genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
 
@@ -65,3 +52,8 @@ Xeth-capability-max=67
 metrics-enabled=true
 metrics-host="0.0.0.0"
 metrics-port=9545
+
+### Plugin Configuration ###
+
+# Disable external plugins
+Xplugins-external-enabled=false
