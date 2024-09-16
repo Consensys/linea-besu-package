@@ -107,14 +107,8 @@ plugin-linea-module-limit-file-path="config/trace-limits.mainnet.toml"
 
 Currently, the following profiles are available:
 
-| Profile Name         | Description                                | Status                |
-|----------------------|--------------------------------------------|-----------------------|
-| [`follower-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/follower-mainnet.toml)   | Creates a follower node on the Linea mainnet.   | ✅                   |
-| [`follower-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/follower-sepolia.toml)   | Creates a follower node on the Linea Sepolia testnet. | ✅                   |
-| [`sequencer-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/sequencer-mainnet.toml)  | Creates a sequencer node on the Linea mainnet.  | ⚠️                    |
-| [`sequencer-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/sequencer-sepolia.toml)  | Creates a sequencer node on the Linea Sepolia testnet. | ⚠️                    |
-| [`shomei-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/shomei-mainnet.toml)     | Creates a Shomei node on the Linea mainnet.     | ⚠️                    |
-| [`shomei-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/shomei-sepolia.toml)     | Creates a Shomei node on the Linea Sepolia testnet. | ⚠️                    |
-| [`tracer-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/tracer-mainnet.toml)     | Creates a tracer node on the Linea mainnet.     | ⚠️                    |
-| [`tracer-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/tracer-sepolia.toml)     | Creates a tracer node on the Linea Sepolia testnet. | ⚠️                    |
+| Profile Name                                                                                                              | Description                                                                          | Status                |
+|---------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|-----------------------|
+| [`basic-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-mainnet.toml)       | Creates a basic node on Linea mainnet.                                               | ✅                   |
+| [`advanced-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-sepolia.toml) | Creates a node on Linea mainnet with `linea_estimateGas` and `finalized tag plugin`. | ✅                   |
 
