@@ -107,8 +107,8 @@ plugin-linea-module-limit-file-path="config/trace-limits.mainnet.toml"
 
 Currently, the following profiles are available:
 
-| Profile Name                                                                                                              | Description                                                                          | Status                |
-|---------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|-----------------------|
-| [`basic-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-mainnet.toml)       | Creates a basic node on Linea mainnet.                                               | ✅                   |
-| [`advanced-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-mainnet.toml) | Creates a node on Linea mainnet with `linea_estimateGas` and `finalized tag plugin`. | ✅                   |
-
+| Profile Name                                                                                                              | Description                                                               | Network | Status  |
+|---------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|---------|---------|
+| [`basic-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-mainnet.toml)       | Creates a basic Linea Node.                                               | Mainnet | ✅       |
+| [`basic-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-sepolia.toml)       | Creates a basic Linea Node.                                               | Sepolia | ✅       |
+| [`advanced-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-mainnet.toml) | Creates a Linea Node with `linea_estimateGas` and `finalized tag plugin`. | Mainnet | ✅       |
