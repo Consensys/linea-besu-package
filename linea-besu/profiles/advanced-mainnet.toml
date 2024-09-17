@@ -13,7 +13,7 @@ max-peers=50
 # For node to be a sequencer, this key has to match the key used in genesis file
 node-private-key-file="data/key"
 genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
-sync-mode="SNAP"
+sync-mode="FULL"
 Xsnapsync-synchronizer-flat-db-healing-enabled=true
 
 ### Transaction pool ###
@@ -21,7 +21,7 @@ tx-pool-enable-save-restore=true
 tx-pool-disable-locals=true
 tx-pool-price-bump=1
 tx-pool-max-future-by-sender=1000
-tx-pool-min-gas-price="50000000"
+tx-pool-min-gas-price="10000000"
 tx-pool-layer-max-capacity="100000000"
 tx-pool-priority-senders=["0xc1C6B09D1eB6fCA0fF3cA11027E5Bc4AeDb47F67","0x46eA7a855DA88FBC09cc59de93468E6bFbf0d81b"]
 tx-pool-no-local-priority=true
@@ -77,14 +77,14 @@ plugin-linea-max-tx-gas-limit=24000000
 plugin-linea-estimate-gas-min-margin="1.2"
 Xin-process-rpc-enabled=true
 Xin-process-rpc-apis=["MINER"]
-plugin-linea-tx-pool-profitability-check-api-enabled=false
-plugin-linea-tx-pool-profitability-check-p2p-enabled=false
-plugin-linea-tx-pool-simulation-check-p2p-enabled=false
+plugin-linea-tx-pool-profitability-check-api-enabled=true
+plugin-linea-tx-pool-profitability-check-p2p-enabled=true
+plugin-linea-tx-pool-simulation-check-p2p-enabled=true
 plugin-linea-tx-pool-simulation-check-api-enabled=true
 plugin-linea-min-margin="1.0"
 plugin-linea-fixed-gas-cost-wei=30000000
 plugin-linea-variable-gas-cost-wei=10000000
-plugin-linea-estimate-gas-compatibility-mode-enabled=true
+plugin-linea-estimate-gas-compatibility-mode-enabled=false
 plugin-linea-extra-data-pricing-enabled=true
 plugin-linea-extra-data-set-min-gas-price-enabled=true
 plugin-linea-max-block-gas=24000000

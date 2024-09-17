@@ -5,7 +5,7 @@ genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
 # Settings for logging are defined in "/opt/log4j/besu-log-config.xml"
 
 # Sync mode and data layer implementation
-sync-mode="SNAP"
+sync-mode="FULL"
 data-storage-format="BONSAI"
 Xsnapsync-synchronizer-flat-db-healing-enabled=true
 
