@@ -13,7 +13,7 @@ max-peers=50
 # For node to be a sequencer, this key has to match the key used in genesis file
 node-private-key-file="data/key"
 genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
-sync-mode="FULL"
+sync-mode="SNAP"
 Xsnapsync-synchronizer-flat-db-healing-enabled=true
 
 ### Transaction pool ###
