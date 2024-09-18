@@ -1,7 +1,7 @@
 services:
   linea-besu-advanced-sepolia-node:
     image: consensys/linea-besu-package:latest
-    command: --profile=advanced-sepolia --p2p-host=127.0.0.1 --plugin-linea-l1-rpc-endpoint=http://127.0.0.1:8545
+    command: --profile=advanced-sepolia --p2p-host=YOUR_IP_ADDRESS --plugin-linea-l1-rpc-endpoint=YOUR_L1_RPC_ENDPOINT
     ports:
       - 30303:30303
       - 8545:8545
