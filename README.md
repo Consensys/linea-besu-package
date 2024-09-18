@@ -16,6 +16,15 @@ In the docker-compose.yaml file, update the --p2p-host command to include your p
 --p2p-host=103.10.10.10
 ```
 
+Update plugin-linea-l1-rpc-endpoint config with your L1 RPC endpoint.
+You should replace YOUR_L1_RPC_ENDPOINT with your endpoint, like:
+```sh
+--plugin-linea-l1-rpc-endpoint=https://mainnet.infura.io/v3/PROJECT_ID
+```
+
+This is required to enable RPC queries using "FINALIZED" block tag.
+Linea Finalization status is based on L1 RPC endpoint's response
+
 ### Step 2. Start the Besu node
 ```sh
 docker compose -f ./docker/docker-compose-basic-mainnet.yaml up
