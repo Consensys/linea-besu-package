@@ -40,8 +40,13 @@ bin/besu --help
 ```
 
 ### Step 2. Start the Besu client
+
+Note the YOUR_L1_RPC_ENDPOINT. You should replace this with your L1 RPC endpoint. 
+
+This is required to enable RPC queries using "FINALIZED" tag. 
+Linea Finalization status is based on L1 RPC endpoint's response
 ```sh
-bin/besu --profile=basic-mainnet
+bin/besu --profile=basic-mainnet --plugin-linea-l1-rpc-endpoint=YOUR_L1_RPC_ENDPOINT
 ```
 
 ## Build from source
