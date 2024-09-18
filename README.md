@@ -96,7 +96,6 @@ Each profile is a TOML file that outlines the plugins and CLI options to be used
 plugins=["LineaExtraDataPlugin","LineaEndpointServicePlugin","LineaTransactionPoolValidatorPlugin","LineaTransactionSelectorPlugin"]
 
 # required options to configure the plugins above
-plugin-linea-deny-list-path="config/denylist.mainnet.txt"
 plugin-linea-module-limit-file-path="config/trace-limits.mainnet.toml"
 # Other required plugin options
 # ...
