@@ -70,7 +70,7 @@ target-gas-limit="61000000"
 ### Plugin Configuration ###
 #plugin-linea-min-margin="0.3"
 #plugin-linea-gas-price-ratio=12
-plugins=["LineaEndpointServicePlugin","L1FinalizationTagUpdaterPlugin"]
+plugins=["LineaEstimateGasEndpointPlugin","L1FinalizationTagUpdaterPlugin"]
 plugin-linea-module-limit-file-path="config/trace-limits.mainnet.toml"
 plugin-linea-max-tx-calldata-size=60000
 plugin-linea-max-block-calldata-size=70000
@@ -96,3 +96,4 @@ plugin-linea-estimate-gas-compatibility-mode-multiplier="1.2"
 
 # L1FinalizationTagUpdaterPlugin
 plugin-linea-l1-smart-contract-address="0xd19d4B5d358258f05D7B411E21A1460D11B0876F"
+plugin-linea-l1-rpc-endpoint="http://localhost:8545"

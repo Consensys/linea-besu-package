@@ -68,7 +68,7 @@ min-gas-price="100000000"
 target-gas-limit="61000000"
 
 ### Plugin Configuration ###
-plugins=["LineaEndpointServicePlugin","L1FinalizationTagUpdaterPlugin"]
+plugins=["LineaEstimateGasEndpointPlugin","L1FinalizationTagUpdaterPlugin"]
 plugin-linea-module-limit-file-path="config/trace-limits.sepolia.toml"
 plugin-linea-max-tx-calldata-size=60000
 plugin-linea-max-block-calldata-size=70000
@@ -89,5 +89,8 @@ plugin-linea-extra-data-pricing-enabled=true
 plugin-linea-extra-data-set-min-gas-price-enabled=true
 plugin-linea-l1l2-bridge-contract="0x33bf916373159A8c1b54b025202517BfDbB7863D"
 plugin-linea-l1l2-bridge-topic="e856c2b8bd4eb0027ce32eeaf595c21b0b6b4644b326e5b7bd80a1cf8db72e6c"
+
+# L1FinalizationTagUpdaterPlugin
 plugin-linea-l1-polling-interval="PT12S"
 plugin-linea-l1-smart-contract-address="0xB218f8A4Bc926cF1cA7b3423c154a0D627Bdb7E5"
+plugin-linea-l1-rpc-endpoint="http://localhost:8545"
