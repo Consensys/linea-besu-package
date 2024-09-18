@@ -107,7 +107,7 @@ jobs:
 
       - name: Start container
         run: |
-          COMMAND="docker run -d --name ${{ env.CONTAINER_NAME }} -e BESU_PROFILE=${{ matrix.file }} ${{ env.DOCKER_IMAGE }} "
+          COMMAND="docker run -d --name ${{ env.CONTAINER_NAME }} -e BESU_PROFILE=${{ matrix.file }} ${{ env.DOCKER_IMAGE }}"
           echo $COMMAND
           eval $COMMAND
 
