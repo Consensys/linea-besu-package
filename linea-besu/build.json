@@ -17,13 +17,6 @@
     },
     {
       "type": "download",
-      "name": "linea-tracer",
-      "url": "https://github.com/Consensys/linea-tracer/releases/download/v{version}/linea-tracer-v{version}.jar",
-      "version": "0.6.0-rc1",
-      "outputDir": "plugins"
-    },
-    {
-      "type": "download",
       "name": "besu-shomei-plugin",
       "url": "https://github.com/Consensys/besu-shomei-plugin/releases/download/v{version}/besu-shomei-plugin-v{version}.jar",
       "version": "0.3.1",
