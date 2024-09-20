@@ -16,7 +16,11 @@ RUN apt-get update $NO_PROXY_CACHE  && \
   # Ensure we use a stable UID for besu, as file permissions are tied to UIDs.
   adduser --uid 1000 --disabled-password --gecos "" --home /opt/besu besu  && \
   chown besu:besu /opt/besu  && \
-  chmod 0755 /opt/besu
+  chmod 0755 /opt/besu  && \
+  # Create /data folder and set permissions
+  mkdir /data  && \
+  chown besu:besu /data  && \
+  chmod 0755 /data
 
 USER besu
 WORKDIR /opt/besu
