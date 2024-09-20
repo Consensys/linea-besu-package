@@ -55,7 +55,7 @@ Note the YOUR_L1_RPC_ENDPOINT. You should replace this with your L1 RPC endpoint
 This is required to enable RPC queries using "FINALIZED" tag. 
 Linea Finalization status is based on L1 RPC endpoint's response
 ```sh
-bin/besu --profile=basic-mainnet --plugin-linea-l1-rpc-endpoint=YOUR_L1_RPC_ENDPOINT
+bin/besu --profile=advanced-mainnet --plugin-linea-l1-rpc-endpoint=YOUR_L1_RPC_ENDPOINT
 ```
 
 ## Build from source
@@ -120,8 +120,9 @@ plugin-linea-module-limit-file-path="config/trace-limits.mainnet.toml"
 
 Currently, the following profiles are available:
 
-| Profile Name                                                                                                              | Description                                                               | Network | Status  |
-|---------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|---------|---------|
-| [`basic-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-mainnet.toml)       | Creates a basic Linea Node.                                               | Mainnet | ✅       |
-| [`basic-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-sepolia.toml)       | Creates a basic Linea Node.                                               | Sepolia | ✅       |
-| [`advanced-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-mainnet.toml) | Creates a Linea Node with `linea_estimateGas` and `finalized tag plugin`. | Mainnet | ✅       |
+| Profile Name                                                                                                              | Description                                                               | Network | 
+|---------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|---------|
+| [`basic-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-mainnet.toml)       | Creates a basic Linea Node.                                               | Mainnet |
+| [`advanced-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-mainnet.toml) | Creates a Linea Node with `linea_estimateGas` and `finalized tag plugin`. | Mainnet |
+| [`basic-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-sepolia.toml)       | Creates a basic Linea Node.                                               | Sepolia |
+| [`advanced-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-mainnet.toml) | Creates a Linea Node with `linea_estimateGas` and `finalized tag plugin`. | Sepolia |
