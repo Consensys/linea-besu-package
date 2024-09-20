@@ -46,6 +46,7 @@ EUC                 = 1000000
 # Block-specific limits
 #
 BLOCK_TX       = 200
+BLOCK_L1SIZE   = 108592
 BLOCK_L2L1LOGS = 16
 BLOCK_KECCAK   = 8192
 
