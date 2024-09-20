@@ -1,5 +1,5 @@
 ### Data and Storage ###
-data-path="data"
+data-path="/data"
 data-storage-format="BONSAI"
 
 ### Node and Network configuration ###
@@ -14,7 +14,7 @@ fast-sync-min-peers=3
 max-peers=50
 
 # For node to be a sequencer, this key has to match the key used in genesis file
-node-private-key-file="data/key"
+node-private-key-file="/data/key"
 genesis-file="genesis/genesis.testnet-sepolia.json" # Path to the custom genesis file
 sync-mode="SNAP"
 Xsnapsync-synchronizer-flat-db-healing-enabled=true

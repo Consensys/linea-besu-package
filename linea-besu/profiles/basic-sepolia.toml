@@ -2,8 +2,8 @@
 genesis-file="genesis/genesis.testnet-sepolia.json" # Path to the custom genesis file
 
 # data
-data-path="data"
-node-private-key-file="data/key"
+data-path="/data"
+node-private-key-file="/data/key"
 
 # logging
 # Settings for logging are defined in "/opt/log4j/besu-log-config.xml"
