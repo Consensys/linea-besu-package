@@ -12,7 +12,7 @@
       "type": "download",
       "name": "linea-sequencer",
       "url": "https://github.com/Consensys/linea-sequencer/releases/download/v{version}/besu-sequencer-plugins-v{version}.jar",
-      "version": "0.1.4-test33",
+      "version": "0.1.4-test34",
       "outputDir": "plugins"
     },
     {
