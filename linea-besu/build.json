@@ -19,7 +19,7 @@
       "type": "download",
       "name": "linea-tracer",
       "url": "https://github.com/Consensys/linea-tracer/releases/download/v{version}/linea-tracer-v{version}.jar",
-      "version": "0.6.0-rc1",
+      "version": "0.6.0-rc8",
       "outputDir": "plugins"
     },
     {
@@ -32,8 +32,8 @@
     {
       "type": "download",
       "name": "finalized-tag-updater",
-      "url": "https://linea-assets-public.s3.us-east-2.amazonaws.com/finalized-tag-plugin/finalized-tag-updater-v{version}.jar",
-      "version": "0.0.1",
+      "url": "https://github.com/Consensys/linea-monorepo/releases/download/finalized-tag-updater-v{version}/finalized-tag-updater-v{version}.jar",
+      "version": "0.0.2",
       "outputDir": "plugins"
     },
     {
