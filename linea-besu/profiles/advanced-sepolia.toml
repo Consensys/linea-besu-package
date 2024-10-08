@@ -65,7 +65,7 @@ engine-rpc-port=8551
 engine-host-allowlist=["*"]
 
 ### Gas and Block Limit Configuration ###
-min-gas-price="100000000"
+min-gas-price="10000000"
 target-gas-limit="61000000"
 
 ### Plugin Configuration ###
