@@ -12,7 +12,7 @@
       "type": "download",
       "name": "linea-sequencer",
       "url": "https://github.com/Consensys/linea-sequencer/releases/download/v{version}/besu-sequencer-plugins-v{version}.jar",
-      "version": "0.1.4-test34",
+      "version": "0.8.0-rc4.1",
       "outputDir": "plugins"
     },
     {
@@ -29,6 +29,13 @@
       "version": "0.0.2",
       "outputDir": "plugins"
     },
+    {
+      "type": "download",
+      "name": "besu-fleet-plugin",
+      "url": "https://github.com/Consensys/besu-fleet-plugin/releases/download/{version}/besu-fleet-plugin-{version}.jar",
+      "version": "0.2.3",
+      "outputDir": "plugins"
+    },    
     {
       "type": "copy",
       "name": "profiles",
