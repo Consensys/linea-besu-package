@@ -11,8 +11,8 @@
       {
         "type": "download",
         "name": "linea-sequencer",
-        "url": "https://github.com/Consensys/linea-sequencer/releases/download/v{version}/besu-sequencer-plugins-v{version}.jar",
-        "version": "0.1.4-test34",
+        "url": "https://github.com/Consensys/linea-sequencer/releases/download/v{version}/linea-sequencer-v{version}.jar",
+        "version": "0.8.0-rc4.1.jar",
         "outputDir": "plugins"
       },
       {
@@ -46,6 +46,13 @@
         "name": "genesis",
         "src": "linea-besu/genesis",
         "outputDir": "genesis"
+      },
+      {
+        "type": "download",
+        "name": "linea-tracer",
+        "url": "https://github.com/Consensys/linea-tracer/releases/download/v{version}/linea-tracer-v{version}.jar",
+        "version": "0.6.0-rc8",
+        "outputDir": "plugins"
       }
     ]
   }
