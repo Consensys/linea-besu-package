@@ -28,19 +28,43 @@ jobs:
           username: ${{ secrets.DOCKER_REPO_USER }}
           password: ${{ secrets.DOCKER_REPO_TOKEN }}
 
+      - name: Check modified files
+        id: files
+        run: |
+          echo "FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})" >> $GITHUB_ENV
+
       - name: Download and Prepare Artifacts
         run: |
-          mkdir -p besu/plugins besu/profiles besu/config besu/genesis
-          curl -L "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/24.10-delivery34/linea-besu-24.10-delivery34.tar.gz" | tar xz -C besu
-          curl -L "https://github.com/Consensys/linea-sequencer/releases/download/v0.1.4-test35/besu-sequencer-plugins-v0.1.4-test35.jar" -o besu/plugins/besu-sequencer-plugins-v0.1.4-test35.jar
-          curl -L "https://github.com/Consensys/besu-shomei-plugin/releases/download/v0.3.1/besu-shomei-plugin-v0.3.1.jar" -o besu/plugins/besu-shomei-plugin-v0.3.1.jar
-          curl -L "https://github.com/Consensys/linea-monorepo/releases/download/finalized-tag-updater-v0.0.1/finalized-tag-updater-v0.0.1.jar" -o besu/plugins/finalized-tag-updater-v0.0.1.jar
-          cp -r linea-besu/profiles besu/profiles
-          cp -r linea-besu/config besu/config
-          cp -r linea-besu/genesis besu/genesis
+          if [[ -n "${{ env.CHANGED_FILES }}" ]]; then
+            for file in $CHANGED_FILES; do
+              network=$(echo "$file" | sed -E 's/build-(.*)\.json/\1/')
+              mkdir -p besu/$network/plugins besu/$network/profiles besu/$network/config besu/$network/genesis
+              
+              jq -c '.modules[]' "$file" | while read -r module; do
+                type=$(echo "$module" | jq -r '.type')
+                name=$(echo "$module" | jq -r '.name')
+                url=$(echo "$module" | jq -r '.url')
+                version=$(echo "$module" | jq -r '.version')
+                outputDir=$(echo "$module" | jq -r '.outputDir // empty')
+                
+                case "$type" in
+                  "extract")
+                    curl -L "${url/\{version\}/$version}" | tar xz -C "besu/$network/${outputDir}"
+                    ;;
+                  "download")
+                    curl -L "${url/\{version\}/$version}" -o "besu/$network/${outputDir}/$name-$version.jar"
+                    ;;
+                  "copy")
+                    cp -r "$name" "besu/$network/${outputDir}"
+                    ;;
+                esac
+              done
+            done
+          fi
 
-      - name: Define Artifact Versions
+      - name: Define Artifact Versions devnet
         id: artifact-versions-devnet
+        if: contains(env.FILES, 'build-devnet.json')
         run: |
           linea_besu_version=$(jq -r '.modules[] | select(.name=="linea-besu") | .version' build-devnet.json)
           linea_sequencer_version=$(jq -r '.modules[] | select(.name=="linea-sequencer") | .version' build-devnet.json)
@@ -50,8 +74,9 @@ jobs:
           echo "::set-output name=linea_sequencer_version::$linea_sequencer_version"
           echo "::set-output name=finalized_tag_updater_version::$finalized_tag_updater_version"
 
-      - name: Define Artifact Versions
+      - name: Define Artifact Versions Sepolia
         id: artifact-versions-sepolia
+        if: contains(env.FILES, 'build-sepolia.json')
         run: |
           linea_besu_version=$(jq -r '.modules[] | select(.name=="linea-besu") | .version' build-sepolia.json)
           linea_sequencer_version=$(jq -r '.modules[] | select(.name=="linea-sequencer") | .version' build-sepolia.json)
@@ -61,8 +86,9 @@ jobs:
           echo "::set-output name=linea_sequencer_version::$linea_sequencer_version"
           echo "::set-output name=finalized_tag_updater_version::$finalized_tag_updater_version"
 
-      - name: Define Artifact Versions
+      - name: Define Artifact Versions Mainnet
         id: artifact-versions-mainnet
+        if: contains(env.FILES, 'build-mainnet.json')
         run: |
           linea_besu_version=$(jq -r '.modules[] | select(.name=="linea-besu") | .version' build-mainnet.json)
           linea_sequencer_version=$(jq -r '.modules[] | select(.name=="linea-sequencer") | .version' build-mainnet.json)
@@ -72,16 +98,30 @@ jobs:
           echo "::set-output name=linea_sequencer_version::$linea_sequencer_version"
           echo "::set-output name=finalized_tag_updater_version::$finalized_tag_updater_version"
 
-      - name: Build Docker image
+      - name: Build and push Docker image for Devnet
+        if: contains(env.FILES, 'build-devnet.json')
         uses: docker/build-push-action@v2
-        run: |
-          docker build . -t linea-besu-package:${{ steps.artifact-versions-devnet.outputs.linea_besu_version }}-${{ steps.artifact-versions-devnet.outputs.linea_sequencer_version }}-${{ steps.artifact-versions-devnet.outputs.finalized_tag_updater_version }}
-          docker build . -t linea-besu-package:${{ steps.artifact-versions-sepolia.outputs.linea_besu_version }}-${{ steps.artifact-versions-sepolia.outputs.linea_sequencer_version }}-${{ steps.artifact-versions-sepolia.outputs.finalized_tag_updater_version }}
-          docker build . -t linea-besu-package:${{ steps.artifact-versions-mainnet.outputs.linea_besu_version }}-${{ steps.artifact-versions-mainnet.outputs.linea_sequencer_version }}-${{ steps.artifact-versions-mainnet.outputs.finalized_tag_updater_version }}
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            linea-besu-package:${{ steps.artifact-versions-devnet.outputs.linea_besu_version }}-${{ steps.artifact-versions-devnet.outputs.linea_sequencer_version }}-${{ steps.artifact-versions-devnet.outputs.finalized_tag_updater_version }}
 
-      - name: Push Docker image
-        if: github.event_name == 'push'
-        run: |
-          docker push linea-besu-package:${{ steps.artifact-versions-devnet.outputs.linea_besu_version }}-${{ steps.artifact-versions-devnet.outputs.linea_sequencer_version }}-${{ steps.artifact-versions-devnet.outputs.finalized_tag_updater_version }}
-          docker push linea-besu-package:${{ steps.artifact-versions-sepolia.outputs.linea_besu_version }}-${{ steps.artifact-versions-sepolia.outputs.linea_sequencer_version }}-${{ steps.artifact-versions-sepolia.outputs.finalized_tag_updater_version }}
-          docker push linea-besu-package:${{ steps.artifact-versions-mainnet.outputs.linea_besu_version }}-${{ steps.artifact-versions-mainnet.outputs.linea_sequencer_version }}-${{ steps.artifact-versions-mainnet.outputs.finalized_tag_updater_version }}
+      - name: Build and push Docker image for Sepolia
+        if: contains(env.FILES, 'build-sepolia.json')
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            linea-besu-package:${{ steps.artifact-versions-sepolia.outputs.linea_besu_version }}-${{ steps.artifact-versions-sepolia.outputs.linea_sequencer_version }}-${{ steps.artifact-versions-sepolia.outputs.finalized_tag_updater_version }}
+
+      - name: Build and push Docker image for Mainnet
+        if: contains(env.FILES, 'build-mainnet.json')
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+            linea-besu-package:${{ steps.artifact-versions-mainnet.outputs.linea_besu_version }}-${{ steps.artifact-versions-mainnet.outputs.linea_sequencer_version }}-${{ steps.artifact-versions-mainnet.outputs.finalized_tag_updater_version }}
