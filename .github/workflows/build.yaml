@@ -11,7 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        environment: ['devnet', 'sepolia', 'mainnet']
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -36,7 +38,6 @@ jobs:
             linea-besu/build-*.json
 
       - name: Download and Prepare Artifacts
-        if: steps.changed-files.outputs.any_changed == 'true'
         run: |
           CONFIG_FILE="linea-besu/build-${{ matrix.environment }}.json"
           mkdir -p besu/${{ matrix.environment }}/plugins besu/${{ matrix.environment }}/profiles besu/${{ matrix.environment }}/config besu/${{ matrix.environment }}/genesis
@@ -62,24 +63,23 @@ jobs:
         shell: /usr/bin/bash -e {0}
 
       - name: Define Artifact Versions
-        if: steps.changed-files.outputs.any_changed == 'true'
+        id: artifact-versions
         run: |
           CONFIG_FILE="linea-besu/build-${{ matrix.environment }}.json"
           linea_besu_version=$(jq -r '.modules[] | select(.name=="linea-besu") | .version' "$CONFIG_FILE")
           linea_sequencer_version=$(jq -r '.modules[] | select(.name=="linea-sequencer") | .version' "$CONFIG_FILE")
           finalized_tag_updater_version=$(jq -r '.modules[] | select(.name=="finalized-tag-updater") | .version' "$CONFIG_FILE")
 
-          echo "::set-output name=linea_besu_version::$linea_besu_version"
-          echo "::set-output name=linea_sequencer_version::$linea_sequencer_version"
-          echo "::set-output name=finalized_tag_updater_version::$finalized_tag_updater_version"
+          echo "linea_besu_version=$linea_besu_version" >> $GITHUB_ENV
+          echo "linea_sequencer_version=$linea_sequencer_version" >> $GITHUB_ENV
+          echo "finalized_tag_updater_version=$finalized_tag_updater_version" >> $GITHUB_ENV
 
       - name: Build and push Docker image
-        if: contains(env.CHANGED_FILES, 'linea-besu/build-${{ matrix.environment }}.json')
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           push: true
           tags: |
-            linea-besu-package:${{ matrix.environment }}-${{ steps.artifact-versions.outputs.linea_besu_version }}-${{ steps.artifact-versions.outputs.linea_sequencer_version }}-${{ steps.artifact-versions.outputs.finalized_tag_updater_version }}
-          
+            linea-besu-package:${{ matrix.environment }}-${{ env.linea_besu_version }}-${{ env.linea_sequencer_version }}-${{ env.finalized_tag_updater_version }}
