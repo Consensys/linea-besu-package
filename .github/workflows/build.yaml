@@ -35,10 +35,37 @@ jobs:
 
       - name: Download and Prepare Artifacts
         run: |
+          if [[ -z "${{ env.CHANGED_FILES }}" ]]; then
+            echo "No changed files detected."
+            exit 0
+          fi
+
           CONFIG_FILE="build-${{ matrix.environment }}.json"
           if echo "${{ env.CHANGED_FILES }}" | grep -q "$CONFIG_FILE"; then
             mkdir -p besu/${{ matrix.environment }}/plugins besu/${{ matrix.environment }}/profiles besu/${{ matrix.environment }}/config besu/${{ matrix.environment }}/genesis
-            # Your existing jq and curl commands adjusted for dynamic paths...
+            jq -c '.modules[]' "$file" | while read -r module; do
+              type=$(echo "$module" | jq -r '.type')
+              name=$(echo "$module" | jq -r '.name')
+              url=$(echo "$module" | jq -r '.url')
+              version=$(echo "$module" | jq -r '.version')
+              outputDir=$(echo "$module" | jq -r '.outputDir // empty')
+              
+              case "$type" in
+                "extract")
+                  curl -L "${url/\{version\}/$version}" | tar xz -C "besu/$network/${outputDir}"
+                  ;;
+                "download")
+                  curl -L "${url/\{version\}/$version}" -o "besu/$network/${outputDir}/$name-$version.jar"
+                  ;;
+                "copy")
+                  cp -r "$name" "besu/$network/${outputDir}"
+                  ;;
+              esac
+            done
+          else
+            echo "$CONFIG_FILE not modified."
+          fi
+        shell: /usr/bin/bash -e {0}
 
       - name: Define Artifact Versions
         id: artifact-versions
@@ -62,3 +89,5 @@ jobs:
           push: true
           tags: |
             linea-besu-package:${{ matrix.environment }}-${{ steps.artifact-versions.outputs.linea_besu_version }}-${{ steps.artifact-versions.outputs.linea_sequencer_version }}-${{ steps.artifact-versions.outputs.finalized_tag_updater_version }}
+
+    
