@@ -6,7 +6,7 @@
         "type": "extract",
         "name": "linea-besu",
         "url": "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/{version}/linea-besu-{version}.tar.gz",
-        "version": "24.10-delivery34"
+        "version": "24.10-delivery35"
       },
       {
         "type": "download",
