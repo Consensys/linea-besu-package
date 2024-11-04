@@ -31,8 +31,11 @@ jobs:
       - name: Check modified files
         id: files
         run: |
-          echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 'linea-besu/' | grep 'build-.*\.json' | xargs)" >> $GITHUB_ENV
-
+          git diff --name-only HEAD~1 HEAD
+          git diff --name-only HEAD~1 HEAD | grep 'linea-besu/build-.*\.json'
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep 'linea-besu/build-.*\.json' | xargs)
+          echo "Detected changed files: $CHANGED_FILES"
+          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
       - name: Download and Prepare Artifacts
         run: |
           if [[ -z "${{ env.CHANGED_FILES }}" ]]; then
