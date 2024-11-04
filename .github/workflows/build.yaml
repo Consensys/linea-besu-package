@@ -81,7 +81,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile
+          file: docker/Dockerfile
           push: true
           tags: |
             linea-besu-package:${{ matrix.environment }}-${{ env.linea_besu_version }}-${{ env.linea_sequencer_version }}-${{ env.finalized_tag_updater_version }}
