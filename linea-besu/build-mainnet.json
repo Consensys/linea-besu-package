@@ -26,7 +26,7 @@
         "type": "download",
         "name": "finalized-tag-updater",
         "url": "https://github.com/Consensys/linea-monorepo/releases/download/finalized-tag-updater-v{version}/finalized-tag-updater-v{version}.jar",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "outputDir": "plugins"
       },
       {
