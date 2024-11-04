@@ -31,7 +31,7 @@ jobs:
       - name: Check modified files
         id: files
         run: |
-          echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'build-.*\.json' | xargs)" >> $GITHUB_ENV
+          echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 'linea-besu/' | grep 'build-.*\.json' | xargs)" >> $GITHUB_ENV
 
       - name: Download and Prepare Artifacts
         run: |
@@ -40,10 +40,10 @@ jobs:
             exit 0
           fi
 
-          CONFIG_FILE="build-${{ matrix.environment }}.json"
-          if echo "${{ env.CHANGED_FILES }}" | grep -q "$CONFIG_FILE"; then
+          CONFIG_FILE="linea-besu/build-${{ matrix.environment }}.json"
+          if echo "${{ env.CHANGED_FILES }}" | grep -q "linea-besu/build-${{ matrix.environment }}.json"; then
             mkdir -p besu/${{ matrix.environment }}/plugins besu/${{ matrix.environment }}/profiles besu/${{ matrix.environment }}/config besu/${{ matrix.environment }}/genesis
-            jq -c '.modules[]' "$file" | while read -r module; do
+            jq -c '.modules[]' "$CONFIG_FILE" | while read -r module; do
               type=$(echo "$module" | jq -r '.type')
               name=$(echo "$module" | jq -r '.name')
               url=$(echo "$module" | jq -r '.url')
@@ -52,13 +52,13 @@ jobs:
               
               case "$type" in
                 "extract")
-                  curl -L "${url/\{version\}/$version}" | tar xz -C "besu/$network/${outputDir}"
+                  curl -L "${url/\{version\}/$version}" | tar xz -C "besu/${{ matrix.environment }}/${outputDir}"
                   ;;
                 "download")
-                  curl -L "${url/\{version\}/$version}" -o "besu/$network/${outputDir}/$name-$version.jar"
+                  curl -L "${url/\{version\}/$version}" -o "besu/${{ matrix.environment }}/${outputDir}/$name-$version.jar"
                   ;;
                 "copy")
-                  cp -r "$name" "besu/$network/${outputDir}"
+                  cp -r "$name" "besu/${{ matrix.environment }}/${outputDir}"
                   ;;
               esac
             done
@@ -70,18 +70,18 @@ jobs:
       - name: Define Artifact Versions
         id: artifact-versions
         run: |
-          CONFIG_FILE="build-${{ matrix.environment }}.json"
-          if echo "${{ env.CHANGED_FILES }}" | grep -q "$CONFIG_FILE"; then
-            linea_besu_version=$(jq -r '.modules[] | select(.name=="linea-besu") | .version' $CONFIG_FILE)
-            linea_sequencer_version=$(jq -r '.modules[] | select(.name=="linea-sequencer") | .version' $CONFIG_FILE)
-            finalized_tag_updater_version=$(jq -r '.modules[] | select(.name=="finalized-tag-updater") | .version' $CONFIG_FILE)
+          CONFIG_FILE="linea-besu/build-${{ matrix.environment }}.json"
+          if echo "${{ env.CHANGED_FILES }}" | grep -q "linea-besu/build-${{ matrix.environment }}.json"; then
+            linea_besu_version=$(jq -r '.modules[] | select(.name=="linea-besu") | .version' "$CONFIG_FILE")
+            linea_sequencer_version=$(jq -r '.modules[] | select(.name=="linea-sequencer") | .version' "$CONFIG_FILE")
+            finalized_tag_updater_version=$(jq -r '.modules[] | select(.name=="finalized-tag-updater") | .version' "$CONFIG_FILE")
 
             echo "::set-output name=linea_besu_version::$linea_besu_version"
             echo "::set-output name=linea_sequencer_version::$linea_sequencer_version"
             echo "::set-output name=finalized_tag_updater_version::$finalized_tag_updater_version"
 
       - name: Build and push Docker image
-        if: contains(env.CHANGED_FILES, 'build-${{ matrix.environment }}.json')
+        if: contains(env.CHANGED_FILES, 'linea-besu/build-${{ matrix.environment }}.json')
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -89,5 +89,4 @@ jobs:
           push: true
           tags: |
             linea-besu-package:${{ matrix.environment }}-${{ steps.artifact-versions.outputs.linea_besu_version }}-${{ steps.artifact-versions.outputs.linea_sequencer_version }}-${{ steps.artifact-versions.outputs.finalized_tag_updater_version }}
-
-    
+          
