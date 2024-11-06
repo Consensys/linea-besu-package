@@ -57,7 +57,9 @@ jobs:
           echo "downloading linea-besu: ${{ env.linea_besu_version }}"
           wget -nv "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/${{ env.linea_besu_version }}/linea-besu-${{ env.linea_besu_version }}.tar.gz"
           tar -xvf linea-besu-${{ env.linea_besu_version }}.tar.gz
-          mv /tmp/linea-besu-${{ env.linea_besu_version }} /opt/besu
+          mkdir -p /opt/besu
+          mv /tmp/linea-besu-${{ env.linea_besu_version }}/* /opt/besu
+          echo "moved to /opt/besu"
           
       - name: Build and push Docker image
         if: steps.changed-files.outputs.any_changed == 'true'
