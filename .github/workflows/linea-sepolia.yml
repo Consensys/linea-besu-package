@@ -1,0 +1,116 @@
+name: linea-sepolia
+
+on:
+  workflow_call:
+    outputs:
+      workflow_run_id: 
+        description: "the run id of the workflow"
+        value: ${{ jobs.build.outputs.workflow_run_id }}
+  workflow_dispatch:
+
+permissions:
+  id-token: write  
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: build
+    outputs:
+      workflow_run_id: ${{ steps.workflow_details.outputs.id }}
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: get workflow_details
+        id: workflow_details
+        run: echo "id=${{ github.run_id }}" >> $GITHUB_OUTPUT
+      
+      - name: get versions via dotenv
+        id: dotenv
+        uses: falti/dotenv-action@v1
+        with:
+          path: versions/linea-sepolia.env
+          mode: development
+          keys-case: lower
+          log-variables: true
+          load-mode: strict
+
+      - name: set docker tag
+        id: dockertag
+        run: |
+          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref_type }}" == "tag" ]; then
+            echo "IMAGE=sepolia-${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "IMAGE=sepolia-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: download and untar the linea-besu archive
+        run: |
+          cd /tmp/
+          echo "downloading linea-besu: ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}"
+          wget -nv "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz"
+          tar -xvf linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz
+          mv /tmp/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} /tmp/besu
+
+      - name: copy the list of versions to the container
+        run: |
+          cp ./versions/linea-mainnet.env /tmp/besu/versions.txt
+          mkdir -p /tmp/besu/plugins
+
+      - name: get the plugins
+        run: |
+          cd /tmp/besu/plugins
+
+          echo "getting linea_sequencer_plugin_version: ${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}" 
+          wget -nv "https://github.com/Consensys/linea-sequencer/releases/download/v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}/besu-sequencer-plugins-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+
+          echo "getting finalized_tag_updater_plugin_version: ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}" 
+          wget -nv "https://github.com/Consensys/linea-monorepo/releases/download/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+
+          echo "getting linea_tracer_plugin_version: ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}" 
+          wget -nv "https://github.com/Consensys/linea-tracer/releases/download/v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}/linea-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+
+          echo "getting shomei_plugin_version: ${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}" 
+          wget -nv "https://github.com/Consensys/besu-shomei-plugin/releases/download/v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}/besu-shomei-plugin-v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+
+      - name: piece the package together to build the docker images
+        run: |
+          cd linea-besu
+          mv /tmp/besu ./
+          mv config/ genesis/ profiles/ besu/
+          tree .
+
+      # - name: set up docker buildx
+      #   uses: docker/setup-buildx-action@v3   
+
+      # - name: login to docker
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKER_USER_RW }}
+      #     password: ${{ secrets.DOCKER_PASSWORD_RW }}
+
+      # - name: set docker build args
+      #   run: |
+      #     echo "BUILD_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
+      #     echo "Building image tag: ${{ steps.dockertag.outputs.IMAGE }}"
+
+      # - name: build and push the combined manifest
+      #   uses: docker/build-push-action@v6
+      #   env:
+      #     DOCKER_BUILD_SUMMARY: false
+      #   with:
+      #     context: besu-fleet/.
+      #     platforms: linux/arm64,linux/amd64
+      #     provenance: false
+      #     cache-from: type=local,src=/tmp/.buildx-cache
+      #     cache-to: type=local,dest=/tmp/.buildx-cache          
+      #     build-args: |
+      #       VERSION=${{ steps.dockertag.outputs.IMAGE }}
+      #       VCS_REF=${{ github.sha }}
+      #       BUILD_DATE=${{ env.BUILD_DATE }}
+      #     push: true
+      #     tags: |
+      #        consensys/linea-besu-package:${{ steps.dockertag.outputs.IMAGE }}
+
