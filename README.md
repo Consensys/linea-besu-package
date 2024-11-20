@@ -32,9 +32,12 @@ docker compose -f ./docker/docker-compose-basic-mainnet.yaml up
 Alternatively, to run a node with a specific profile, set the `BESU_PROFILE` environment variable to the desired profile name:
 
 ```sh
-docker run -e BESU_PROFILE=basic-mainnet consensys/linea-besu-package:latest
+docker run -e BESU_PROFILE=basic-mainnet consensys/linea-besu-package:mainnet-latest
 ```
-
+Or use the sepolia image
+```sh
+docker run -e BESU_PROFILE=basic-mainnet consensys/linea-besu-package:sepolia-latest
+```
 ## Run with a binary distribution
 
 ### Step 1. Install Linea Besu from packaged binaries
@@ -60,41 +63,21 @@ bin/besu --profile=advanced-mainnet --plugin-linea-l1-rpc-endpoint=YOUR_L1_RPC_E
 
 ## Build from source
 
-The build process is driven by the following configuration file:
+1. Make a branch with changes to `versions/linea-*.env` as needed
+2. Go to the [actions tab](https://github.com/Consensys/linea-besu-package/actions) and click on the appropriate workflow and select your branch - docker image will get published
 
-- [linea-besu/build.json](https://github.com/Consensys/linea-besu-package/tree/main/linea-besu/build.json): This file specifies the modules to be downloaded, extracted, or copied.
-
-To execute the complete build process, which includes downloading, extracting, copying plugins, and creating
-distributions, use the following command:
-
-```sh
-./gradlew build
-```
-
-This command will generate two distribution files:
-
-- `/build/distributions/linea-besu-package-<version>.tar.gz`
-- `/build/distributions/linea-besu-package-<version>.zip`
-
-To create the Docker image, run:
-
-```sh
-./gradlew distDocker
-```
 ## How-To Release
 
 Releases are automated using GitHub Actions and are triggered by pushing a tag that matches the
 pattern `'v[0-9]+.[0-9]+.[0-9]+`. (e.g., `v1.0.0`, `v2.1.3`)
 
-The tag creation will draft a release and include the distribution artifact uploaded as an asset.
+The tag creation will create a release and include the distribution artifact uploaded as an asset.
    ```sh
-   git tag -a 'v0.0.1' 5cf01f9  -m 'Release test'
-   git push upstream v1.0.0
+   git tag v0.0.1
+   git push upstream v0.0.1
    ```
 
-Once the GitHub draft release is published, the Docker image will be created and pushed to the registry. Additionally, 
-the `latest` tag will be updated to match this release.
-
+Additionally, the `latest` tag will be updated to match this release.
 
 
 ## Profiles
