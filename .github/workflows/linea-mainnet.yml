@@ -153,12 +153,12 @@ jobs:
           echo "|--------|---------|--------------|" >> output.md
           echo "| linea-besu | ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} | $(sha256sum /tmp/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz | awk '{ print $1 }' ) |" >> output.md
           echo "| linea-sequencer-plugin | ${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/besu-sequencer-plugins-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
-          echo "| linea-tracer-plugin | ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/besu-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
+          echo "| linea-tracer-plugin | ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
           echo "| linea-finalized-tag-updater-plugin | ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
           echo "| shomei-plugin | ${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/besu-shomei-plugin-v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
           echo "" >> output.md
 
-          MANIFEST=$(consensys/linea-besu-package:${{ steps.dockertag.outputs.IMAGE }})
+          MANIFEST=$(docker manifest inspect consensys/linea-besu-package:${{ steps.dockertag.outputs.IMAGE }})
           if [ $? -eq 0 ]; then
             echo "## Docker Image Details" >> output.md
             echo "" >> output.md
