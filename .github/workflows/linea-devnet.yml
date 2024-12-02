@@ -1,0 +1,185 @@
+name: linea-devnet
+
+on:
+  workflow_call:
+    outputs:
+      workflow_run_id: 
+        description: "the run id of the workflow"
+        value: ${{ jobs.build.outputs.workflow_run_id }}
+  workflow_dispatch:
+
+permissions:
+  id-token: write  
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: dockerhub
+    outputs:
+      workflow_run_id: ${{ steps.workflow_details.outputs.id }}
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: get workflow_details
+        id: workflow_details
+        run: echo "id=${{ github.run_id }}" >> $GITHUB_OUTPUT
+      
+      - name: get versions via dotenv
+        id: dotenv
+        uses: falti/dotenv-action@v1
+        with:
+          path: versions/linea-devnet.env
+          mode: development
+          keys-case: lower
+          log-variables: true
+          load-mode: strict
+
+      - name: set docker tag
+        id: dockertag
+        run: |
+          if [ "${{ github.event_name }}" == "push" ] && [ "${{ github.ref_type }}" == "tag" ]; then
+            echo "IMAGE=devnet-${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "IMAGE=devnet-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: download and untar the linea-besu archive
+        run: |
+          cd /tmp/
+          echo "downloading linea-besu: ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}"
+          wget -nv "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz"
+          tar -xvf linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz
+          mv /tmp/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} /tmp/besu
+
+      - name: copy the list of versions to the container
+        run: |
+          cp ./versions/linea-devnet.env /tmp/besu/versions.txt
+          mkdir -p /tmp/besu/plugins
+
+      - name: get the plugins
+        run: |
+          cd /tmp/besu/plugins
+
+          echo "getting linea_sequencer_plugin_version: ${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}" 
+          wget -nv "https://github.com/Consensys/linea-sequencer/releases/download/v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}/besu-sequencer-plugins-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+
+          echo "getting finalized_tag_updater_plugin_version: ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}" 
+          wget -nv "https://github.com/Consensys/linea-monorepo/releases/download/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+
+          echo "getting linea_tracer_plugin_version: ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}" 
+          wget -nv "https://github.com/Consensys/linea-tracer/releases/download/v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}/linea-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+
+          echo "getting shomei_plugin_version: ${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}" 
+          wget -nv "https://github.com/Consensys/besu-shomei-plugin/releases/download/v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}/besu-shomei-plugin-v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+
+      - name: piece the package together to build the docker images
+        run: |
+          cd linea-besu
+          mv /tmp/besu ./
+          mv config/ genesis/ profiles/ besu/
+          tree .
+
+      - name: set up docker buildx
+        uses: docker/setup-buildx-action@v3   
+
+      - name: login to docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER_RW }}
+          password: ${{ secrets.DOCKER_PASSWORD_RW }}
+
+      - name: set docker build args
+        run: |
+          echo "BUILD_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
+          echo "Building image tag: ${{ steps.dockertag.outputs.IMAGE }}"
+
+      - name: build and push the combined manifest
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          context: linea-besu/.
+          platforms: linux/arm64,linux/amd64
+          provenance: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache          
+          build-args: |
+            VERSION=${{ steps.dockertag.outputs.IMAGE }}
+            VCS_REF=${{ github.sha }}
+            BUILD_DATE=${{ env.BUILD_DATE }}
+          push: true
+          tags: |
+            consensys/linea-besu-package:${{ steps.dockertag.outputs.IMAGE }}
+
+      ### release process artifacts
+      ## adds one more tag :latest the above push on a release 
+      - name: build and push the combined manifest
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          context: linea-besu/.
+          platforms: linux/arm64,linux/amd64
+          provenance: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache          
+          build-args: |
+            VERSION=${{ steps.dockertag.outputs.IMAGE }}
+            VCS_REF=${{ github.sha }}
+            BUILD_DATE=${{ env.BUILD_DATE }}
+          push: true
+          tags: |
+            consensys/linea-besu-package:devnet-latest
+
+      ### release package artifacts
+      - name: release on tag - create artifacts for a release
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: release_create_artifacts
+        run: |
+          mkdir release && cd release
+          tar -czvf linea-besu-${{ steps.dockertag.outputs.IMAGE }}.tar.gz ../linea-besu/
+
+          echo "## Release Artifact: Linea - devnet" > output.md
+          echo "linea-besu-${{ steps.dockertag.outputs.IMAGE }}.tar.gz" >> output.md
+          echo "SHA256: $(sha256sum linea-besu-${{ steps.dockertag.outputs.IMAGE }}.tar.gz | awk '{ print $1 }' )" >> output.md
+          echo "" >> output.md
+
+          echo "## Besu and Plugin Details" >> output.md
+          echo "| Module | Version | SHA-256 |" >> output.md
+          echo "|--------|---------|--------------|" >> output.md
+          echo "| linea-besu | ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} | $(sha256sum /tmp/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz | awk '{ print $1 }' ) |" >> output.md
+          echo "| linea-sequencer-plugin | ${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/besu-sequencer-plugins-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
+          echo "| linea-tracer-plugin | ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
+          echo "| linea-finalized-tag-updater-plugin | ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
+          echo "| shomei-plugin | ${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/besu-shomei-plugin-v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
+          echo "" >> output.md
+
+          MANIFEST=$(docker manifest inspect consensys/linea-besu-package:${{ steps.dockertag.outputs.IMAGE }})
+          if [ $? -eq 0 ]; then
+            echo "## Docker Image Details" >> output.md
+            echo "" >> output.md
+            echo "To pull the image, use the following command:" >> output.md
+            echo "\`\`\`" >> output.md
+            echo "docker pull consensys/linea-besu-package:${{ steps.dockertag.outputs.IMAGE }}" >> output.md
+            echo "\`\`\`" >> output.md
+            echo "" >> output.md
+            echo "| Digest | OS | Architecture |" >> output.md
+            echo "|--------|----|--------------|" >> output.md
+            echo "$MANIFEST" | jq -r '.manifests[] | select(.platform.architecture != "unknown" and .platform.os != "unknown") | "| \(.digest) | \(.platform.os) | \(.platform.architecture) |"' >> output.md
+          else
+            echo "Docker image consensys/linea-besu-package:${{ steps.dockertag.outputs.IMAGE }} does not exist on dockerhub"
+            exit 1
+          fi
+
+      - name: upload linea-devnet artifacts
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: linea-devnet
+          retention-days: 1
+          path: |
+            ./release
