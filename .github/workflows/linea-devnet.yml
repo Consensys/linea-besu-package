@@ -64,8 +64,8 @@ jobs:
           cd /tmp/besu/plugins
 
           echo "getting linea_sequencer_plugin_version: ${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}" 
-          wget -nv "https://github.com/Consensys/linea-sequencer/releases/download/v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}/besu-sequencer-plugins-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
-
+          wget -nv "https://github.com/Consensys/linea-sequencer/releases/download/v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}/linea-sequencer-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+          
           echo "getting finalized_tag_updater_plugin_version: ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}" 
           wget -nv "https://github.com/Consensys/linea-monorepo/releases/download/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
 
