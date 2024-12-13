@@ -1,6 +1,10 @@
 name: linea-mainnet
 
 on:
+  pull_request:
+    branches:
+      - main
+
   workflow_call:
     outputs:
       workflow_run_id: 
