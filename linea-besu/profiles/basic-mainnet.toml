@@ -20,8 +20,8 @@ static-nodes-file="config/static-nodes.mainnet.json"
 # Min gas price
 min-gas-price=1000
 
-# Host white list
-host-whitelist=["*"]
+# Host allow list
+host-allowlist=["*"]
 
 
 # rpc
