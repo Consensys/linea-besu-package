@@ -87,7 +87,7 @@ jobs:
       - name: Split profiles
         id: list
         run: |
-          files=$(ls linea-besu/profiles/*devnet* | xargs -n 1 basename | sed 's/\.[^.]*$//')
+          files=$(ls linea-besu/profiles/*sepolia* | xargs -n 1 basename | sed 's/\.[^.]*$//')
           files_json=$(echo "$files" | tr ' ' '\n' | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "files=$files_json" >> "$GITHUB_OUTPUT"
           echo "Files: $files_json"
