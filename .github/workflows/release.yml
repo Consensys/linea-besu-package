@@ -40,7 +40,10 @@ jobs:
       - name: collate the artifacts into a folder
         run: |
           mkdir dist
-          echo "Artifacts workflow_run_id: ${{ needs.ethereum.outputs.workflow_run_id }}"
+          echo "Artifacts workflow_run_id: ${{ github.run_id }}"
+          echo "linea-mainnet.outputs.workflow_run_id: ${{ needs.linea-mainnet.outputs.workflow_run_id }}"
+          echo "linea-sepolia.outputs.workflow_run_id: ${{ needs.linea-sepolia.outputs.workflow_run_id }}"
+          echo "linea-devnet.outputs.workflow_run_id: ${{ needs.linea-devnet.outputs.workflow_run_id }}"
 
       - name: download linea-mainnet
         uses: actions/download-artifact@v4
@@ -49,7 +52,7 @@ jobs:
           repository: Consensys/linea-besu-package
           name: linea-mainnet
           path: dist/linea-mainnet
-          run-id: ${{ needs.linea-mainnet.outputs.workflow_run_id }}
+          run-id: ${{ github.run_id }}
 
       - name: download linea-sepolia
         uses: actions/download-artifact@v4
@@ -58,7 +61,7 @@ jobs:
           repository: Consensys/linea-besu-package         
           name: linea-sepolia
           path: dist/linea-sepolia
-          run-id: ${{ needs.linea-sepolia.outputs.workflow_run_id }}
+          run-id: ${{ github.run_id }}
 
       - name: download linea-devnet
         uses: actions/download-artifact@v4
@@ -67,7 +70,7 @@ jobs:
           repository: Consensys/linea-besu-package         
           name: linea-devnet
           path: dist/linea-devnet
-          run-id: ${{ needs.linea-devnet.outputs.workflow_run_id }}
+          run-id: ${{ github.run_id }}
 
       - name: set release tag
         id: releasetag
