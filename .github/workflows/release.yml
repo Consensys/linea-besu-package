@@ -45,7 +45,6 @@ jobs:
       - name: download linea-mainnet
         uses: actions/download-artifact@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: Consensys/linea-besu-package
           name: linea-mainnet
           path: dist/linea-mainnet
@@ -54,7 +53,6 @@ jobs:
       - name: download linea-sepolia
         uses: actions/download-artifact@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: Consensys/linea-besu-package         
           name: linea-sepolia
           path: dist/linea-sepolia
