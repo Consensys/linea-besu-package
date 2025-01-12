@@ -87,8 +87,10 @@ runs:
         echo "getting finalized_tag_updater_plugin_version: ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}" 
         wget -nv "https://github.com/Consensys/linea-monorepo/releases/download/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
 
-        echo "getting linea_tracer_plugin_version: ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}" 
-        wget -nv "https://github.com/Consensys/linea-tracer/releases/download/v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}/linea-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+        if [ -n "${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}" ]; then
+          echo "getting linea_tracer_plugin_version: ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}" 
+          wget -nv "https://github.com/Consensys/linea-tracer/releases/download/v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}/linea-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+        fi
 
         echo "getting shomei_plugin_version: ${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}" 
         wget -nv "https://github.com/Consensys/besu-shomei-plugin/releases/download/v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}/besu-shomei-plugin-v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
