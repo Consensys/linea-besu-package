@@ -84,7 +84,19 @@ jobs:
           tags: |
             consensys/linea-besu-package:mainnet-latest
 
+      ### get the version numbers to create the release notes
+      - name: get versions via dotenv
+        id: dotenv
+        uses: falti/dotenv-action@v1
+        with:
+          path: versions/linea-mainnet.env
+          mode: development
+          keys-case: lower
+          log-variables: true
+          load-mode: strict
+
       ### release package artifacts
+      ### create the release and attach the release notes
       - name: release on tag - create artifacts for a release
         if: startsWith(github.ref, 'refs/tags/v')
         id: release_create_artifacts
@@ -125,6 +137,7 @@ jobs:
             echo "Docker image consensys/linea-besu-package:${{ steps.assemble.outputs.dockertag }} does not exist on dockerhub"
             exit 1
           fi
+          cat output.md
 
       - name: upload linea-mainnet artifacts
         if: startsWith(github.ref, 'refs/tags/v')

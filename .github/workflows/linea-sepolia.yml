@@ -83,7 +83,19 @@ jobs:
           tags: |
             consensys/linea-besu-package:sepolia-latest  
 
+      ### get the version numbers to create the release notes
+      - name: get versions via dotenv
+        id: dotenv
+        uses: falti/dotenv-action@v1
+        with:
+          path: versions/linea-sepolia.env
+          mode: development
+          keys-case: lower
+          log-variables: true
+          load-mode: strict
+
       ### release package artifacts
+      ### create the release and attach the release notes
       - name: release on tag - create artifacts for a release
         if: startsWith(github.ref, 'refs/tags/v')
         id: release_create_artifacts
