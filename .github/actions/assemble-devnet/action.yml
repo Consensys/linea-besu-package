@@ -91,8 +91,8 @@ runs:
         wget -nv "https://github.com/Consensys/linea-monorepo/releases/download/staterecovery-v${{ steps.dotenv.outputs.LINEA_STATERECOVERY_PLUGIN_VERSION }}/linea-staterecovery-besu-plugin-v${{ steps.dotenv.outputs.LINEA_STATERECOVERY_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
 
         echo "getting linea_tracer_plugin_version: ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}" 
-        wget -nv "https://github.com/Consensys/linea-tracer/releases/download/v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}/linea-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.zip" -P /tmp
-        unzip /tmp/linea-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.zip -d /tmp/besu/plugins
+        wget -nv "https://github.com/Consensys/linea-tracer/releases/download/${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}/linea-tracer-${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.zip" -P /tmp
+        unzip /tmp/linea-tracer-${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.zip -d /tmp/besu/plugins
 
         echo "getting shomei_plugin_version: ${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}" 
         wget -nv "https://github.com/Consensys/besu-shomei-plugin/releases/download/v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}/besu-shomei-plugin-v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
@@ -123,7 +123,7 @@ runs:
         echo "|--------|---------|--------------|" >> output.md
         echo "| linea-besu | ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} | $(sha256sum /tmp/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz | awk '{ print $1 }' ) |" >> output.md
         echo "| linea-sequencer-plugin | ${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-sequencer-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
-        echo "| linea-tracer-plugin | ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-tracer-v${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
+        echo "| linea-tracer-plugin | ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-tracer-${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
         echo "| linea-finalized-tag-updater-plugin | ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
         echo "| linea-staterecovery-plugin | ${{ steps.dotenv.outputs.LINEA_STATERECOVERY_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-staterecovery-besu-plugin-v${{ steps.dotenv.outputs.LINEA_STATERECOVERY_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
         echo "| shomei-plugin | ${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/besu-shomei-plugin-v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
