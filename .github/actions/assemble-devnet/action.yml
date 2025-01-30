@@ -82,7 +82,8 @@ runs:
         cd /tmp/besu/plugins
 
         echo "getting linea_sequencer_plugin_version: ${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}" 
-        wget -nv "https://github.com/Consensys/linea-sequencer/releases/download/v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}/linea-sequencer-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+        wget -nv "https://github.com/Consensys/linea-sequencer/releases/download/v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}/linea-sequencer-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.zip" -P /tmp
+        unzip -o /tmp/linea-sequencer-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.zip -d /tmp/besu/plugins
         
         echo "getting finalized_tag_updater_plugin_version: ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}" 
         wget -nv "https://github.com/Consensys/linea-monorepo/releases/download/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
@@ -92,7 +93,7 @@ runs:
 
         echo "getting linea_tracer_plugin_version: ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}" 
         wget -nv "https://github.com/Consensys/linea-tracer/releases/download/${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}/linea-tracer-${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.zip" -P /tmp
-        unzip /tmp/linea-tracer-${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.zip -d /tmp/besu/plugins
+        unzip -o /tmp/linea-tracer-${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.zip -d /tmp/besu/plugins
 
         echo "getting shomei_plugin_version: ${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}" 
         wget -nv "https://github.com/Consensys/besu-shomei-plugin/releases/download/v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}/besu-shomei-plugin-v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
