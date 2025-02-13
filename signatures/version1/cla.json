@@ -1,3 +1,12 @@
 {
-   "signedContributors": []
+  "signedContributors": [
+    {
+      "name": "jpnovais",
+      "id": 1478752,
+      "comment_id": 2657389833,
+      "created_at": "2025-02-13T18:15:50Z",
+      "repoId": 831953398,
+      "pullRequestNo": 172
+    }
+  ]
 }
