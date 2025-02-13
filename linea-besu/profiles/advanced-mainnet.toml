@@ -71,7 +71,7 @@ target-gas-limit="61000000"
 ### Plugin Configuration ###
 #plugin-linea-min-margin="0.3"
 #plugin-linea-gas-price-ratio=12
-plugins=["LineaEstimateGasEndpointPlugin","L1FinalizationTagUpdaterPlugin","LineaExtraDataPlugin", "LineaTransactionPoolValidatorPlugin"]
+plugins=["LineaEstimateGasEndpointPlugin","LineaL1FinalizationTagUpdaterPlugin","LineaExtraDataPlugin", "LineaTransactionPoolValidatorPlugin"]
 plugin-linea-module-limit-file-path="config/trace-limits.mainnet.toml"
 plugin-linea-max-tx-calldata-size=60000
 plugin-linea-max-block-calldata-size=70000
