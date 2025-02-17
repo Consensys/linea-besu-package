@@ -110,11 +110,11 @@ runs:
       shell: bash      
       run: |
         mkdir release && cd release
-        tar -czvf linea-besu-${{ steps.assemble.outputs.dockertag }}.tar.gz ../linea-besu/
+        tar -czvf linea-besu-${{ steps.dockertag.outputs.dockertag }}.tar.gz ../linea-besu/
 
         echo "# Release Artifact: Linea - Sepolia" > output.md
-        echo "linea-besu-${{ steps.assemble.outputs.dockertag }}.tar.gz" >> output.md
-        echo "SHA256: $(sha256sum linea-besu-${{ steps.assemble.outputs.dockertag }}.tar.gz | awk '{ print $1 }' )" >> output.md
+        echo "linea-besu-${{ steps.dockertag.outputs.dockertag }}.tar.gz" >> output.md
+        echo "SHA256: $(sha256sum linea-besu-${{ steps.dockertag.outputs.dockertag }}.tar.gz | awk '{ print $1 }' )" >> output.md
         echo "" >> output.md
 
         echo "### Besu and Plugin Details" >> output.md
