@@ -66,7 +66,7 @@ runs:
       run: |
         cd /tmp/
         echo "downloading linea-besu: ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}"
-        wget -nv "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz"
+        wget -nv "https://github.com/Consensys/linea-besu-upstream/releases/download/${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}/besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz"
         tar -xvf linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz
         mv /tmp/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} /tmp/besu
 
