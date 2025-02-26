@@ -67,8 +67,8 @@ runs:
         cd /tmp/
         echo "downloading linea-besu: ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}"
         wget -nv "https://github.com/Consensys/linea-besu-upstream/releases/download/${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}/besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz"
-        tar -xvf linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz
-        mv /tmp/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} /tmp/besu
+        tar -xvf besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz
+        mv /tmp/besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} /tmp/besu
 
     - name: copy the list of versions to the container
       shell: bash      
