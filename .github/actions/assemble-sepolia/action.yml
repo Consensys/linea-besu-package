@@ -66,7 +66,7 @@ runs:
       run: |
         cd /tmp/
         echo "downloading linea-besu: ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}"
-        wget -nv ${{ steps.dotenv.outputs.LINEA_BESU_BASE_URL }}${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}/${{ steps.dotenv.outputs.LINEA_BESU_FILENAME_PREFIX }}-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz"
+        wget -nv "${{ steps.dotenv.outputs.LINEA_BESU_BASE_URL }}${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}/${{ steps.dotenv.outputs.LINEA_BESU_FILENAME_PREFIX }}-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz"
         tar -xvf ${{ steps.dotenv.outputs.LINEA_BESU_FILENAME_PREFIX }}-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz
         mv /tmp/${{ steps.dotenv.outputs.LINEA_BESU_FILENAME_PREFIX }}-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} /tmp/besu
 
