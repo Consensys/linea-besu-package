@@ -21,7 +21,6 @@ Xsnapsync-synchronizer-flat-db-healing-enabled=true
 
 ### Transaction pool ###
 tx-pool-enable-save-restore=true
-tx-pool-disable-locals=true
 tx-pool-price-bump=1
 tx-pool-max-future-by-sender=1000
 tx-pool-min-gas-price="10000000"
