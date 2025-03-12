@@ -7,7 +7,7 @@ genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
 # Sync mode and data layer implementation
 sync-mode="SNAP"
 data-storage-format="BONSAI"
-Xsnapsync-synchronizer-flat-db-healing-enabled=true
+Xbonsai-full-flat-db-enabled=true
 
 # data
 data-path="/data"
