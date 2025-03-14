@@ -16,7 +16,7 @@ max-peers=50
 node-private-key-file="/data/key"
 genesis-file="genesis/genesis.mainnet.json" # Path to the custom genesis file
 sync-mode="SNAP"
-Xsnapsync-synchronizer-flat-db-healing-enabled=true
+Xbonsai-full-flat-db-enabled=true
 
 ### Transaction pool ###
 tx-pool-enable-save-restore=true
