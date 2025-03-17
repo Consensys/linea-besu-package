@@ -48,8 +48,8 @@ graphql-http-cors-origins=["all"]
 
 api-gas-price-blocks=20
 api-gas-price-percentile=60
-api-gas-and-priority-fee-limiting-enabled= true
-api-gas-and-priority-fee-lower-bound-coefficient= "120"
+api-gas-and-priority-fee-limiting-enabled=true
+api-gas-and-priority-fee-lower-bound-coefficient="120"
 
 Xplugin-rocksdb-high-spec-enabled=true
 
