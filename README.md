@@ -25,7 +25,7 @@ You should replace YOUR_L1_RPC_ENDPOINT with your endpoint, like:
 This is required to enable RPC queries using "FINALIZED" block tag.
 Linea Finalization status is based on L1 RPC endpoint's response
 
-### Step 2. Start the Besu node
+### Step 3. Start the Besu node
 ```sh
 docker compose -f ./docker/docker-compose-basic-mainnet.yaml up
 ```
