@@ -66,9 +66,9 @@ runs:
       run: |
         cd /tmp/
         echo "downloading linea-besu: ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}"
-        wget -nv "https://artifacts.consensys.net/public/linea-besu/raw/names/linea-besu.tar.gz/versions/${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz"
-        tar -xvf linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz
-        mv /tmp/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} /tmp/besu
+        wget -nv "${{ steps.dotenv.outputs.LINEA_BESU_BASE_URL }}${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}/${{ steps.dotenv.outputs.LINEA_BESU_FILENAME_PREFIX }}-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz"
+        tar -xvf ${{ steps.dotenv.outputs.LINEA_BESU_FILENAME_PREFIX }}-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz
+        mv /tmp/${{ steps.dotenv.outputs.LINEA_BESU_FILENAME_PREFIX }}-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} /tmp/besu
 
     - name: copy the list of versions to the container
       shell: bash      
@@ -86,7 +86,7 @@ runs:
         unzip -o /tmp/linea-sequencer-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.zip -d /tmp/besu/plugins
         
         echo "getting finalized_tag_updater_plugin_version: ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}" 
-        wget -nv "https://github.com/Consensys/linea-monorepo/releases/download/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
+        wget -nv "https://github.com/Consensys/linea-monorepo/releases/download/linea-finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}/linea-finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
 
         echo "getting linea_staterecovery_plugin_version: ${{ steps.dotenv.outputs.LINEA_STATERECOVERY_PLUGIN_VERSION }}"
         wget -nv "https://github.com/Consensys/linea-monorepo/releases/download/staterecovery-v${{ steps.dotenv.outputs.LINEA_STATERECOVERY_PLUGIN_VERSION }}/linea-staterecovery-besu-plugin-v${{ steps.dotenv.outputs.LINEA_STATERECOVERY_PLUGIN_VERSION }}.jar" -P /tmp/besu/plugins
@@ -112,11 +112,11 @@ runs:
       shell: bash      
       run: |
         mkdir release && cd release
-        tar -czvf linea-besu-${{ steps.assemble.outputs.dockertag }}.tar.gz ../linea-besu/
+        tar -czvf linea-besu-${{ steps.dockertag.outputs.dockertag }}.tar.gz ../linea-besu/
 
         echo "# Release Artifact: Linea - devnet" > output.md
-        echo "linea-besu-${{ steps.assemble.outputs.dockertag }}.tar.gz" >> output.md
-        echo "SHA256: $(sha256sum linea-besu-${{ steps.assemble.outputs.dockertag }}.tar.gz | awk '{ print $1 }' )" >> output.md
+        echo "linea-besu-${{ steps.dockertag.outputs.dockertag }}.tar.gz" >> output.md
+        echo "SHA256: $(sha256sum linea-besu-${{ steps.dockertag.outputs.dockertag }}.tar.gz | awk '{ print $1 }' )" >> output.md
         echo "" >> output.md
 
         echo "### Besu and Plugin Details" >> output.md
@@ -125,7 +125,7 @@ runs:
         echo "| linea-besu | ${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }} | $(sha256sum /tmp/linea-besu-${{ steps.dotenv.outputs.LINEA_BESU_TAR_GZ }}.tar.gz | awk '{ print $1 }' ) |" >> output.md
         echo "| linea-sequencer-plugin | ${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-sequencer-v${{ steps.dotenv.outputs.LINEA_SEQUENCER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
         echo "| linea-tracer-plugin | ${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-tracer-${{ steps.dotenv.outputs.LINEA_TRACER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
-        echo "| linea-finalized-tag-updater-plugin | ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
+        echo "| linea-finalized-tag-updater-plugin | ${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-finalized-tag-updater-v${{ steps.dotenv.outputs.FINALIZED_TAG_UPDATER_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
         echo "| linea-staterecovery-plugin | ${{ steps.dotenv.outputs.LINEA_STATERECOVERY_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/linea-staterecovery-besu-plugin-v${{ steps.dotenv.outputs.LINEA_STATERECOVERY_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
         echo "| shomei-plugin | ${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }} | $(sha256sum ../linea-besu/besu/plugins/besu-shomei-plugin-v${{ steps.dotenv.outputs.SHOMEI_PLUGIN_VERSION }}.jar | awk '{ print $1 }' ) |" >> output.md    
         echo "" >> output.md
