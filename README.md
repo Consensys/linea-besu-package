@@ -1,3 +1,5 @@
+⚠️ The content of this repository has been migrated to the [linea-monorepo](https://github.com/Consensys/linea-monorepo/tree/main/linea-besu-package)
+
 # Linea Besu Distribution
 
 This project uses Gradle to manage dependencies, build tasks, and create distributions for linea-besu with 
