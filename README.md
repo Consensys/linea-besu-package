@@ -110,4 +110,4 @@ Currently, the following profiles are available:
 | [`basic-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-mainnet.toml)       | Creates a basic Linea Node.                                               | Mainnet |
 | [`advanced-mainnet`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-mainnet.toml) | Creates a Linea Node with `linea_estimateGas` and `finalized tag plugin`. | Mainnet |
 | [`basic-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/basic-sepolia.toml)       | Creates a basic Linea Node.                                               | Sepolia |
-| [`advanced-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-mainnet.toml) | Creates a Linea Node with `linea_estimateGas` and `finalized tag plugin`. | Sepolia |
+| [`advanced-sepolia`](https://github.com/Consensys/linea-besu-package/blob/main/linea-besu/profiles/advanced-sepolia.toml) | Creates a Linea Node with `linea_estimateGas` and `finalized tag plugin`. | Sepolia |
